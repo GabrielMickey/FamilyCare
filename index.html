@@ -1,37 +1,27 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Plantão Familiar</title>
-    </head>
-<body>
-    <script type="module">
-        import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-        const supabaseUrl = 'https://kvjftcxbendrchkrcdrk.supabase.co';
-        const supabaseKey = 'sb_publishable_azAMN84Nxhr_9gqpwo2GRA_vQfld0Kv';
-        const supabase = createClient(supabaseUrl, supabaseKey);
+  const supabaseUrl = 'https://kvjftcxbendrchkrcdrk.supabase.co';
+  const supabaseKey = 'sb_publishable_azAMN84Nxhr_9gqpwo2GRA_vQfld0Kv';
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
-        // --- FUNÇÕES CORRIGIDAS PARA O HTML ENXERGAR ---
-        window.openModal = (id) => document.getElementById(id).classList.add("open");
-        window.closeModal = (id) => document.getElementById(id).classList.remove("open");
+  // Estas funções garantem que os botões funcionem:
+  window.openModal = (id) => {
+    const el = document.getElementById(id);
+    if(el) el.classList.add("open");
+  };
 
-        window.goPage = (page) => {
-            document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
-            document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
-            const target = document.getElementById("page-" + page);
-            if(target) target.classList.remove("hidden");
-            document.querySelector(`[data-page="${page}"]`)?.classList.add("active");
-            document.getElementById("topbar-title").textContent = page.charAt(0).toUpperCase() + page.slice(1);
-        };
+  window.closeModal = (id) => {
+    const el = document.getElementById(id);
+    if(el) el.classList.remove("open");
+  };
 
-        window.saveMed = () => alert("Conectado ao Supabase!");
-        window.saveVital = () => alert("Conectado ao Supabase!");
-        window.saveEvol = () => alert("Conectado ao Supabase!");
-        window.saveShift = () => alert("Conectado ao Supabase!");
-        
-        console.log("Supabase carregado com sucesso!");
-    </script>
-</body>
-</html>
+  window.goPage = (page) => {
+    document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
+    const target = document.getElementById("page-" + page);
+    if(target) target.classList.remove("hidden");
+    console.log("Navegando para:", page);
+  };
+
+  console.log("Sistema Supabase carregado sem erros!");
+</script>
