@@ -473,68 +473,56 @@ tr:hover td{background:var(--surface2)}
   </div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getFirestore, collection, addDoc, updateDoc, deleteDoc, doc,
-  onSnapshot, query, orderBy, serverTimestamp, setDoc
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  <script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-// ─── CONFIG ───────────────────────────────────────────────────────────────
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-};
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// 1. COLE SUA CHAVE NA LINHA ABAIXO:
+const supabaseUrl = 'https://kvjftcxbendrchkrcdrk.supabase.co';
+const supabaseKey = 'COLE_A_PUBLISHABLE_KEY_AQUI';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 // ─── STATE ────────────────────────────────────────────────────────────────
-// Usuário mockado (falso) criado para substituir o login
 let currentUser = { displayName: "Familiar Padrão" }; 
-
 let meds = [], vitals = [], evols = [], shifts = [];
 let currentPage = "dashboard";
-let unsubscribers = [];
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────
 const fmt = ts => {
   if (!ts) return "—";
-  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  const d = new Date(ts);
   return d.toLocaleDateString("pt-BR") + " " + d.toLocaleTimeString("pt-BR", {hour:"2-digit",minute:"2-digit"});
 };
-const fmtDate = ts => { if (!ts) return "—"; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleDateString("pt-BR"); };
-const fmtTime = ts => { if (!ts) return "—"; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); };
+const fmtDate = ts => { if (!ts) return "—"; const d = new Date(ts); return d.toLocaleDateString("pt-BR"); };
+const fmtTime = ts => { if (!ts) return "—"; const d = new Date(ts); return d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); };
 const initials = name => name ? name.split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2) : "?";
 const esc = s => String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const $ = id => document.getElementById(id);
 
 // ─── APP INITIALIZATION ───────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
-  // Inicialização direta do App com o usuário Mockado
   $("user-display-name").textContent = currentUser.displayName;
   $("user-avatar").textContent = initials(currentUser.displayName);
   $("topbar-date").textContent = new Date().toLocaleDateString("pt-BR", {weekday:"long",day:"2-digit",month:"long"});
-  
-  // Chama as inscrições do Firestore
-  subscribeData();
+  loadData();
 });
 
-// ─── FIRESTORE SUBSCRIPTIONS ──────────────────────────────────────────────
-function subscribeData() {
-  const sub = (col, arr, setter) => onSnapshot(
-    query(collection(db, col), orderBy("createdAt","desc")),
-    snap => { arr.length=0; snap.docs.forEach(d => arr.push({id:d.id,...d.data()})); setter(); }
-  );
-  unsubscribers.push(
-    sub("medications", meds, () => { renderMeds(); renderDash(); }),
-    sub("vitals", vitals, () => { renderVitals(); renderDash(); }),
-    sub("evolutions", evols, () => { renderEvols(); renderDash(); }),
-    sub("shifts", shifts, () => { renderShifts(); renderDash(); })
-  );
+// ─── BUSCA DE DADOS SUPABASE ──────────────────────────────────────────────
+async function loadData() {
+  const [medsRes, vitalsRes, evolsRes, shiftsRes] = await Promise.all([
+    supabase.from('medications').select('*').order('created_at', { ascending: false }),
+    supabase.from('vitals').select('*').order('created_at', { ascending: false }),
+    supabase.from('evolutions').select('*').order('created_at', { ascending: false }),
+    supabase.from('shifts').select('*').order('created_at', { ascending: false })
+  ]);
+
+  const mapData = (res) => (res.data || []).map(d => ({...d, createdAt: d.created_at}));
+  meds = mapData(medsRes);
+  vitals = mapData(vitalsRes);
+  evols = mapData(evolsRes);
+  shifts = mapData(shiftsRes);
+
+  renderMeds(); renderVitals(); renderEvols(); renderShifts(); renderDash();
+  if (currentPage === "timeline") renderTimeline();
 }
 
 // ─── NAVIGATION ───────────────────────────────────────────────────────────
@@ -550,21 +538,18 @@ window.goPage = page => {
   if (page === "timeline") renderTimeline();
 };
 
-// ─── MODALS ───────────────────────────────────────────────────────────────
 window.openModal = id => $(id).classList.add("open");
 window.closeModal = id => $(id).classList.remove("open");
 document.querySelectorAll(".modal-bg").forEach(m => m.addEventListener("click", e => { if(e.target === m) m.classList.remove("open"); }));
 
-// ─── ROUTE BADGE COLORS ───────────────────────────────────────────────────
 const routeBadge = {oral:"badge-green",intravenosa:"badge-blue",subcutânea:"badge-yellow",intramuscular:"badge-orange",tópica:"badge-purple",inalatória:"badge-blue",sublingual:"badge-yellow",retal:"badge-orange"};
 const catBadge = {evolução:"badge-purple","visita médica":"badge-blue",exame:"badge-yellow",intercorrência:"badge-red","alteração de medicação":"badge-orange",reclamação:"badge-orange"};
 
-// ─── RENDER DASHBOARD ─────────────────────────────────────────────────────
+// ─── RENDERS ─────────────────────────────────────────────────────────────
 function renderDash() {
   const lm = meds[0], lv = vitals[0];
   const activeShift = shifts.find(s => !s.exitTime);
 
-  // Stats
   $("dash-med-name").textContent = lm ? lm.name : "—";
   $("dash-med-sub").textContent = lm ? `${lm.dose} · ${lm.time || fmtTime(lm.createdAt)}` : "Nenhuma registrada";
   $("dash-spo2").textContent = lv?.spo2 || "—";
@@ -574,7 +559,6 @@ function renderDash() {
   $("dash-temp").textContent = lv?.temp ? `${lv.temp}°` : "—";
   $("dash-temp-sub").textContent = lv?.rr ? `FR: ${lv.rr} rpm` : "Não registrada";
 
-  // Active shift banner
   const banner = $("dash-shift-banner");
   if (activeShift) {
     banner.classList.remove("hidden");
@@ -584,12 +568,11 @@ function renderDash() {
     banner.classList.add("hidden");
   }
 
-  // Recent events timeline
   const events = [
     ...meds.slice(0,3).map(m=>({ts:m.createdAt,text:`Medicação: ${m.name} ${m.dose}`,type:"med"})),
     ...vitals.slice(0,2).map(v=>({ts:v.createdAt,text:`Sinais vitais — PA ${v.bp||"—"}`,type:"vital"})),
     ...evols.slice(0,2).map(e=>({ts:e.createdAt,text:e.text.slice(0,80)+(e.text.length>80?"…":""),type:"evol"})),
-  ].sort((a,b)=>(b.ts?.seconds||0)-(a.ts?.seconds||0)).slice(0,5);
+  ].sort((a,b)=>new Date(b.ts) - new Date(a.ts)).slice(0,5);
 
   const typeLabel = {med:"Medicação",vital:"Sinais Vitais",evol:"Evolução"};
   $("dash-timeline").innerHTML = events.length ? events.map(ev=>`
@@ -602,7 +585,6 @@ function renderDash() {
       </div>
     </div>`).join("") : '<div style="color:var(--text3);font-size:13px;padding:20px 0">Nenhum evento ainda.</div>';
 
-  // Last vitals grid
   if (lv) {
     $("dash-vitals-body").innerHTML = `<div class="card-body">
       <div class="vitals-grid">
@@ -623,13 +605,11 @@ function renderDash() {
     $("dash-vitals-body").innerHTML = '<div class="card-empty">Nenhum sinal vital registrado.</div>';
   }
 
-  // Badge count
   const badge = $("badge-meds");
   if (meds.length > 0) { badge.textContent = meds.length; badge.classList.remove("hidden"); }
   else badge.classList.add("hidden");
 }
 
-// ─── RENDER MEDICATIONS ───────────────────────────────────────────────────
 function renderMeds() {
   if (!meds.length) { $("meds-content").innerHTML = '<div class="card-empty">Nenhuma medicação registrada ainda.</div>'; return; }
   $("meds-content").innerHTML = `<div class="table-wrap"><table>
@@ -647,7 +627,6 @@ function renderMeds() {
   </table></div>`;
 }
 
-// ─── RENDER VITALS ────────────────────────────────────────────────────────
 function renderVitals() {
   if (!vitals.length) { $("vitals-content").innerHTML = '<div class="card-empty">Nenhum sinal vital registrado ainda.</div>'; return; }
   $("vitals-content").innerHTML = `<div class="table-wrap"><table>
@@ -666,7 +645,6 @@ function renderVitals() {
   </table></div>`;
 }
 
-// ─── RENDER EVOLUTIONS ────────────────────────────────────────────────────
 function renderEvols() {
   if (!evols.length) { $("evol-content").innerHTML = '<div class="card-empty">Nenhuma evolução registrada ainda.</div>'; return; }
   $("evol-content").innerHTML = `<div class="card-body">${evols.map(e=>`
@@ -685,7 +663,6 @@ function renderEvols() {
     </div>`).join("")}</div>`;
 }
 
-// ─── RENDER SHIFTS ────────────────────────────────────────────────────────
 function renderShifts() {
   const activeShift = shifts.find(s => !s.exitTime);
   const banner = $("shifts-banner");
@@ -717,14 +694,13 @@ function renderShifts() {
   </table></div>`;
 }
 
-// ─── RENDER TIMELINE ──────────────────────────────────────────────────────
 function renderTimeline() {
   const all = [
     ...meds.map(m=>({ts:m.createdAt,type:"med",label:"Medicação",text:`${m.name} ${m.dose} — via ${m.route}${m.professional?" · "+m.professional:""}`,meta:m.registeredBy})),
     ...vitals.map(v=>({ts:v.createdAt,type:"vital",label:"Sinais Vitais",text:`PA: ${v.bp||"—"} · FC: ${v.hr?v.hr+" bpm":"—"} · SpO2: ${v.spo2||"—"} · Temp: ${v.temp?v.temp+"°C":"—"}`,meta:v.registeredBy})),
     ...evols.map(e=>({ts:e.createdAt,type:"evol",label:e.category||"Evolução",text:e.text,meta:e.registeredBy})),
     ...shifts.map(s=>({ts:s.createdAt,type:"shift",label:"Plantão",text:`${s.familiarName} — entrada ${s.entryTime||""}${s.exitTime?" / saída "+s.exitTime:" (ativo)"}`,meta:s.registeredBy})),
-  ].sort((a,b)=>(b.ts?.seconds||0)-(a.ts?.seconds||0));
+  ].sort((a,b)=>new Date(b.ts) - new Date(a.ts));
 
   $("timeline-all").innerHTML = all.length ? all.map(ev=>`
     <div class="tl-item">
@@ -738,64 +714,72 @@ function renderTimeline() {
     </div>`).join("") : '<div style="color:var(--text3);font-size:13px">Nenhum evento registrado ainda.</div>';
 }
 
-// ─── SAVE ACTIONS ─────────────────────────────────────────────────────────
+// ─── SUPABASE SAVE ACTIONS ───────────────────────────────────────────────
 const registeredBy = () => currentUser?.displayName || "?";
 
 window.saveMed = async () => {
   const name = $("med-name").value.trim(), dose = $("med-dose").value.trim();
   if (!name || !dose) return;
-  await addDoc(collection(db,"medications"), {
+  await supabase.from('medications').insert([{
     date:$("med-date").value, time:$("med-time").value, name, dose,
     route:$("med-route").value, professional:$("med-prof").value,
-    notes:$("med-notes").value, registeredBy:registeredBy(), type:"med", createdAt:serverTimestamp()
-  });
+    notes:$("med-notes").value, registeredBy:registeredBy(), type:"med"
+  }]);
   ["med-date","med-time","med-name","med-dose","med-prof","med-notes"].forEach(id=>$(id).value="");
   closeModal("modal-med");
+  loadData();
 };
 
 window.saveVital = async () => {
-  await addDoc(collection(db,"vitals"), {
+  await supabase.from('vitals').insert([{
     date:$("vit-date").value, time:$("vit-time").value, bp:$("vit-bp").value,
     hr:$("vit-hr").value, spo2:$("vit-spo2").value, temp:$("vit-temp").value,
     rr:$("vit-rr").value, glucose:$("vit-glucose").value, notes:$("vit-notes").value,
-    registeredBy:registeredBy(), type:"vital", createdAt:serverTimestamp()
-  });
+    registeredBy:registeredBy(), type:"vital"
+  }]);
   ["vit-date","vit-time","vit-bp","vit-hr","vit-spo2","vit-temp","vit-rr","vit-glucose","vit-notes"].forEach(id=>$(id).value="");
   closeModal("modal-vital");
+  loadData();
 };
 
 window.saveEvol = async () => {
   const text = $("evol-text").value.trim();
   if (!text) return;
-  await addDoc(collection(db,"evolutions"), {
-    category:$("evol-cat").value, text, registeredBy:registeredBy(), type:"evol", createdAt:serverTimestamp()
-  });
+  await supabase.from('evolutions').insert([{
+    category:$("evol-cat").value, text, registeredBy:registeredBy(), type:"evol"
+  }]);
   $("evol-text").value="";
   closeModal("modal-evol");
+  loadData();
 };
 
 window.saveShift = async () => {
   const familiarName = $("shift-name").value.trim();
   if (!familiarName) return;
-  await addDoc(collection(db,"shifts"), {
+  await supabase.from('shifts').insert([{
     familiarName, entryDate:$("shift-edate").value, entryTime:$("shift-etime").value,
     exitDate:$("shift-xdate").value, exitTime:$("shift-xtime").value,
-    notes:$("shift-notes").value, registeredBy:registeredBy(), type:"shift", createdAt:serverTimestamp()
-  });
+    notes:$("shift-notes").value, registeredBy:registeredBy(), type:"shift"
+  }]);
   ["shift-name","shift-edate","shift-etime","shift-xdate","shift-xtime","shift-notes"].forEach(id=>$(id).value="");
   closeModal("modal-shift");
+  loadData();
 };
 
 window.endShift = async id => {
   const now = new Date();
-  await updateDoc(doc(db,"shifts",id), {
+  await supabase.from('shifts').update({ 
     exitTime: now.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),
     exitDate: now.toLocaleDateString("pt-BR")
-  });
+  }).eq('id', id);
+  loadData();
 };
 
 window.delDoc = async (col, id) => {
-  if (confirm("Confirmar exclusão?")) await deleteDoc(doc(db, col, id));
+  if (confirm("Confirmar exclusão?")) {
+    await supabase.from(col).delete().eq('id', id);
+    loadData();
+  }
 };
 </script>
 </body>
