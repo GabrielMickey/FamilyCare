@@ -480,52 +480,109 @@ tr:hover td{background:var(--surface2)}
   </div>
 </div>
 
-<!-- ═══ FIREBASE + LOGIC ═══ -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getFirestore, collection, addDoc, updateDoc, deleteDoc, doc,
-  onSnapshot, query, orderBy, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-// ─── CONFIG ───────────────────────────────────────────────────────────────
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-};
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+<!-- ═══ SUPABASE + LOGIC ═══ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ─── CONFIG SUPABASE ──────────────────────────────────────────────────────
+const SUPABASE_URL = "https://kvjftcxbendrchkrcdrk.supabase.co";
+const SUPABASE_KEY = "sb_publishable_azAMN84Nxhr_9gqpwo2GRA_vQfld0Kv";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ─── STATE ────────────────────────────────────────────────────────────────
 let userName = "Familiar";
 let meds = [], vitals = [], evols = [], shifts = [];
 let currentPage = "dashboard";
+let isRefreshing = false;
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────
+const parseDate = ts => {
+  if (!ts) return null;
+  if (ts.toDate) return ts.toDate();
+  const d = new Date(ts);
+  return Number.isNaN(d.getTime()) ? null : d;
+};
+const timeValue = ts => {
+  const d = parseDate(ts);
+  return d ? d.getTime() : 0;
+};
 const fmt = ts => {
-  if (!ts) return "—";
-  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  const d = parseDate(ts);
+  if (!d) return "—";
   return d.toLocaleDateString("pt-BR") + " " + d.toLocaleTimeString("pt-BR", {hour:"2-digit",minute:"2-digit"});
 };
-const fmtDate = ts => { if (!ts) return "—"; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleDateString("pt-BR"); };
-const fmtTime = ts => { if (!ts) return "—"; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); };
+const fmtDate = ts => {
+  const d = parseDate(ts);
+  return d ? d.toLocaleDateString("pt-BR") : "—";
+};
+const fmtTime = ts => {
+  const d = parseDate(ts);
+  return d ? d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}) : "—";
+};
 const esc = s => String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const $ = id => document.getElementById(id);
 
-// ─── FIRESTORE SUBSCRIPTIONS ──────────────────────────────────────────────
+const normalizeRow = row => ({
+  ...row,
+  createdAt: row.createdAt || row.created_at,
+  registeredBy: row.registeredBy || row.registered_by,
+  familiarName: row.familiarName || row.familiar_name,
+  entryDate: row.entryDate || row.entry_date,
+  entryTime: row.entryTime || row.entry_time,
+  exitDate: row.exitDate || row.exit_date,
+  exitTime: row.exitTime || row.exit_time,
+});
+
+async function loadTable(table, target) {
+  const { data, error } = await supabaseClient
+    .from(table)
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error(`Erro ao carregar ${table}:`, error);
+    return;
+  }
+
+  target.length = 0;
+  (data || []).forEach(row => target.push(normalizeRow(row)));
+}
+
+async function refreshAll() {
+  if (isRefreshing) return;
+  isRefreshing = true;
+  try {
+    await Promise.all([
+      loadTable("medications", meds),
+      loadTable("vitals", vitals),
+      loadTable("evolutions", evols),
+      loadTable("shifts", shifts),
+    ]);
+
+    renderMeds();
+    renderVitals();
+    renderEvols();
+    renderShifts();
+    renderDash();
+    if (currentPage === "timeline") renderTimeline();
+  } finally {
+    isRefreshing = false;
+  }
+}
+
+// ─── SUPABASE DATA SYNC ───────────────────────────────────────────────────
 function subscribeData() {
-  const sub = (col, arr, setter) => onSnapshot(
-    query(collection(db, col), orderBy("createdAt","desc")),
-    snap => { arr.length=0; snap.docs.forEach(d => arr.push({id:d.id,...d.data()})); setter(); }
-  );
-  sub("medications", meds, () => { renderMeds(); renderDash(); });
-  sub("vitals", vitals, () => { renderVitals(); renderDash(); });
-  sub("evolutions", evols, () => { renderEvols(); renderDash(); });
-  sub("shifts", shifts, () => { renderShifts(); renderDash(); });
+  refreshAll();
+
+  supabaseClient
+    .channel("plantao-familiar-db")
+    .on("postgres_changes", { event: "*", schema: "public", table: "medications" }, refreshAll)
+    .on("postgres_changes", { event: "*", schema: "public", table: "vitals" }, refreshAll)
+    .on("postgres_changes", { event: "*", schema: "public", table: "evolutions" }, refreshAll)
+    .on("postgres_changes", { event: "*", schema: "public", table: "shifts" }, refreshAll)
+    .subscribe();
+
+  window.addEventListener("focus", refreshAll);
+  setInterval(refreshAll, 30000);
 }
 
 // ─── NAVIGATION ───────────────────────────────────────────────────────────
@@ -555,7 +612,6 @@ function renderDash() {
   const lm = meds[0], lv = vitals[0];
   const activeShift = shifts.find(s => !s.exitTime);
 
-  // Stats
   $("dash-med-name").textContent = lm ? lm.name : "—";
   $("dash-med-sub").textContent = lm ? `${lm.dose} · ${lm.time || fmtTime(lm.createdAt)}` : "Nenhuma registrada";
   $("dash-spo2").textContent = lv?.spo2 || "—";
@@ -565,7 +621,6 @@ function renderDash() {
   $("dash-temp").textContent = lv?.temp ? `${lv.temp}°` : "—";
   $("dash-temp-sub").textContent = lv?.rr ? `FR: ${lv.rr} rpm` : "Não registrada";
 
-  // Active shift banner
   const banner = $("dash-shift-banner");
   if (activeShift) {
     banner.classList.remove("hidden");
@@ -575,12 +630,11 @@ function renderDash() {
     banner.classList.add("hidden");
   }
 
-  // Recent events timeline
   const events = [
     ...meds.slice(0,3).map(m=>({ts:m.createdAt,text:`Medicação: ${m.name} ${m.dose}`,type:"med"})),
     ...vitals.slice(0,2).map(v=>({ts:v.createdAt,text:`Sinais vitais — PA ${v.bp||"—"}`,type:"vital"})),
     ...evols.slice(0,2).map(e=>({ts:e.createdAt,text:e.text.slice(0,80)+(e.text.length>80?"…":""),type:"evol"})),
-  ].sort((a,b)=>(b.ts?.seconds||0)-(a.ts?.seconds||0)).slice(0,5);
+  ].sort((a,b)=>timeValue(b.ts)-timeValue(a.ts)).slice(0,5);
 
   const typeLabel = {med:"Medicação",vital:"Sinais Vitais",evol:"Evolução"};
   $("dash-timeline").innerHTML = events.length ? events.map(ev=>`
@@ -593,7 +647,6 @@ function renderDash() {
       </div>
     </div>`).join("") : '<div style="color:var(--text3);font-size:13px;padding:20px 0">Nenhum evento ainda.</div>';
 
-  // Last vitals grid
   if (lv) {
     $("dash-vitals-body").innerHTML = `<div class="card-body">
       <div class="vitals-grid">
@@ -614,7 +667,6 @@ function renderDash() {
     $("dash-vitals-body").innerHTML = '<div class="card-empty">Nenhum sinal vital registrado.</div>';
   }
 
-  // Badge count
   const badge = $("badge-meds");
   if (meds.length > 0) { badge.textContent = meds.length; badge.classList.remove("hidden"); }
   else badge.classList.add("hidden");
@@ -715,7 +767,7 @@ function renderTimeline() {
     ...vitals.map(v=>({ts:v.createdAt,type:"vital",label:"Sinais Vitais",text:`PA: ${v.bp||"—"} · FC: ${v.hr?v.hr+" bpm":"—"} · SpO2: ${v.spo2||"—"} · Temp: ${v.temp?v.temp+"°C":"—"}`,meta:v.registeredBy})),
     ...evols.map(e=>({ts:e.createdAt,type:"evol",label:e.category||"Evolução",text:e.text,meta:e.registeredBy})),
     ...shifts.map(s=>({ts:s.createdAt,type:"shift",label:"Plantão",text:`${s.familiarName} — entrada ${s.entryTime||""}${s.exitTime?" / saída "+s.exitTime:" (ativo)"}`,meta:s.registeredBy})),
-  ].sort((a,b)=>(b.ts?.seconds||0)-(a.ts?.seconds||0));
+  ].sort((a,b)=>timeValue(b.ts)-timeValue(a.ts));
 
   $("timeline-all").innerHTML = all.length ? all.map(ev=>`
     <div class="tl-item">
@@ -735,63 +787,81 @@ const registeredBy = () => userName || "Familiar";
 window.saveMed = async () => {
   const name = $("med-name").value.trim(), dose = $("med-dose").value.trim();
   if (!name || !dose) return;
-  await addDoc(collection(db,"medications"), {
+  const { error } = await supabaseClient.from("medications").insert([{ 
     date:$("med-date").value, time:$("med-time").value, name, dose,
     route:$("med-route").value, professional:$("med-prof").value,
-    notes:$("med-notes").value, registeredBy:registeredBy(), type:"med", createdAt:serverTimestamp()
-  });
+    notes:$("med-notes").value, registered_by:registeredBy(), type:"med", created_at:new Date().toISOString()
+  }]);
+  if (error) { console.error("Erro ao salvar medicação:", error); alert("Erro ao salvar medicação. Veja o console."); return; }
   ["med-date","med-time","med-name","med-dose","med-prof","med-notes"].forEach(id=>$(id).value="");
   closeModal("modal-med");
+  refreshAll();
 };
 
 window.saveVital = async () => {
-  await addDoc(collection(db,"vitals"), {
+  const { error } = await supabaseClient.from("vitals").insert([{
     date:$("vit-date").value, time:$("vit-time").value, bp:$("vit-bp").value,
     hr:$("vit-hr").value, spo2:$("vit-spo2").value, temp:$("vit-temp").value,
     rr:$("vit-rr").value, glucose:$("vit-glucose").value, notes:$("vit-notes").value,
-    registeredBy:registeredBy(), type:"vital", createdAt:serverTimestamp()
-  });
+    registered_by:registeredBy(), type:"vital", created_at:new Date().toISOString()
+  }]);
+  if (error) { console.error("Erro ao salvar sinais vitais:", error); alert("Erro ao salvar sinais vitais. Veja o console."); return; }
   ["vit-date","vit-time","vit-bp","vit-hr","vit-spo2","vit-temp","vit-rr","vit-glucose","vit-notes"].forEach(id=>$(id).value="");
   closeModal("modal-vital");
+  refreshAll();
 };
 
 window.saveEvol = async () => {
   const text = $("evol-text").value.trim();
   if (!text) return;
-  await addDoc(collection(db,"evolutions"), {
-    category:$("evol-cat").value, text, registeredBy:registeredBy(), type:"evol", createdAt:serverTimestamp()
-  });
+  const { error } = await supabaseClient.from("evolutions").insert([{
+    category:$("evol-cat").value, text, registered_by:registeredBy(), type:"evol", created_at:new Date().toISOString()
+  }]);
+  if (error) { console.error("Erro ao salvar evolução:", error); alert("Erro ao salvar evolução. Veja o console."); return; }
   $("evol-text").value="";
   closeModal("modal-evol");
+  refreshAll();
 };
 
 window.saveShift = async () => {
   const familiarName = $("shift-name").value.trim();
   if (!familiarName) return;
-  await addDoc(collection(db,"shifts"), {
-    familiarName, entryDate:$("shift-edate").value, entryTime:$("shift-etime").value,
-    exitDate:$("shift-xdate").value, exitTime:$("shift-xtime").value,
-    notes:$("shift-notes").value, registeredBy:registeredBy(), type:"shift", createdAt:serverTimestamp()
-  });
+  const { error } = await supabaseClient.from("shifts").insert([{
+    familiar_name:familiarName,
+    entry_date:$("shift-edate").value,
+    entry_time:$("shift-etime").value,
+    exit_date:$("shift-xdate").value,
+    exit_time:$("shift-xtime").value,
+    notes:$("shift-notes").value,
+    registered_by:registeredBy(), type:"shift", created_at:new Date().toISOString()
+  }]);
+  if (error) { console.error("Erro ao salvar plantão:", error); alert("Erro ao salvar plantão. Veja o console."); return; }
   ["shift-name","shift-edate","shift-etime","shift-xdate","shift-xtime","shift-notes"].forEach(id=>$(id).value="");
   closeModal("modal-shift");
+  refreshAll();
 };
 
 window.endShift = async id => {
   const now = new Date();
-  await updateDoc(doc(db,"shifts",id), {
-    exitTime: now.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),
-    exitDate: now.toLocaleDateString("pt-BR")
-  });
+  const { error } = await supabaseClient.from("shifts").update({
+    exit_time: now.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),
+    exit_date: now.toLocaleDateString("pt-BR")
+  }).eq("id", id);
+  if (error) { console.error("Erro ao encerrar plantão:", error); alert("Erro ao encerrar plantão. Veja o console."); return; }
+  refreshAll();
 };
 
 window.delDoc = async (col, id) => {
-  if (confirm("Confirmar exclusão?")) await deleteDoc(doc(db, col, id));
+  if (!confirm("Confirmar exclusão?")) return;
+  const { error } = await supabaseClient.from(col).delete().eq("id", id);
+  if (error) { console.error("Erro ao excluir:", error); alert("Erro ao excluir. Veja o console."); return; }
+  refreshAll();
 };
 
 // ─── INIT ─────────────────────────────────────────────────────────────────
 $("topbar-date").textContent = new Date().toLocaleDateString("pt-BR", {weekday:"long",day:"2-digit",month:"long"});
 subscribeData();
+console.log("Supabase conectado com sucesso.");
 </script>
 </body>
 </html>
