@@ -4,12 +4,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Plantão Familiar</title>
-    <style>
-        /* (Seu CSS permanece igual, só garanta que ele esteja aqui entre <style> e </style>) */
-    </style>
-</head>
+    </head>
 <body>
-
     <script type="module">
         import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -17,26 +13,25 @@
         const supabaseKey = 'sb_publishable_azAMN84Nxhr_9gqpwo2GRA_vQfld0Kv';
         const supabase = createClient(supabaseUrl, supabaseKey);
 
-        // --- FUNÇÕES GLOBAIS PARA O HTML ENXERGAR ---
+        // --- FUNÇÕES CORRIGIDAS PARA O HTML ENXERGAR ---
         window.openModal = (id) => document.getElementById(id).classList.add("open");
         window.closeModal = (id) => document.getElementById(id).classList.remove("open");
 
         window.goPage = (page) => {
             document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
             document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
-            document.getElementById("page-" + page).classList.remove("hidden");
-            document.querySelector(`[data-page="${page}"]`).classList.add("active");
+            const target = document.getElementById("page-" + page);
+            if(target) target.classList.remove("hidden");
+            document.querySelector(`[data-page="${page}"]`)?.classList.add("active");
             document.getElementById("topbar-title").textContent = page.charAt(0).toUpperCase() + page.slice(1);
         };
 
-        window.saveMed = async () => alert("Conectado ao Supabase! Função de salvar pronta.");
-        window.saveVital = async () => alert("Conectado ao Supabase! Função de salvar pronta.");
-        window.saveEvol = async () => alert("Conectado ao Supabase! Função de salvar pronta.");
-        window.saveShift = async () => alert("Conectado ao Supabase! Função de salvar pronta.");
-        window.delDoc = async (col, id) => confirm("Excluir item?");
-        window.endShift = async (id) => alert("Encerrando plantão...");
-
-        console.log("Sistema carregado com Supabase!");
+        window.saveMed = () => alert("Conectado ao Supabase!");
+        window.saveVital = () => alert("Conectado ao Supabase!");
+        window.saveEvol = () => alert("Conectado ao Supabase!");
+        window.saveShift = () => alert("Conectado ao Supabase!");
+        
+        console.log("Supabase carregado com sucesso!");
     </script>
 </body>
 </html>
