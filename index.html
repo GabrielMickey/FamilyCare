@@ -1,146 +1,802 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Web App conectado ao Supabase</title>
-    <!-- Tailwind CSS para um visual moderno sem precisar de arquivos extras -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- CDN do SDK do Supabase (Essencial para a conexão) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Plantão Familiar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#1f2937;--surface3:#374151;
+  --border:#30363d;--border2:#21262d;--text:#e6edf3;--text2:#8b949e;--text3:#6e7681;
+  --accent:#2d9cdb;--accent-dim:rgba(45,156,219,.12);
+  --green:#3fb950;--green-dim:rgba(63,185,80,.12);
+  --red:#f85149;--red-dim:rgba(248,81,73,.12);
+  --yellow:#d29922;--yellow-dim:rgba(210,153,34,.12);
+  --purple:#bc8cff;--purple-dim:rgba(188,140,255,.12);
+  --orange:#f0883e;--orange-dim:rgba(240,136,62,.12);
+  --radius:8px;--radius-lg:12px;--shadow:0 1px 3px rgba(0,0,0,.4);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5}
+
+/* FORMS & BUTTONS */
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+.field textarea{resize:vertical;min-height:80px}
+.field select option{background:var(--surface)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;border:none;transition:opacity .15s,transform .1s;font-family:inherit}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--accent);color:#fff;width:100%}
+.btn-primary:hover{opacity:.9}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--text);border-color:var(--text3)}
+.btn-auto{width:auto}
+
+/* APP SHELL */
+.app{display:flex;min-height:100vh}
+.sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:10}
+.sidebar-header{padding:20px 16px 16px;border-bottom:1px solid var(--border)}
+.sidebar-logo{display:flex;align-items:center;gap:8px}
+.sidebar-logo-icon{width:32px;height:32px;background:var(--accent-dim);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--accent)}
+.sidebar-logo-text{font-size:13px;font-weight:700;line-height:1.2}
+.sidebar-logo-sub{font-size:10px;color:var(--text3)}
+.sidebar-patient{margin:12px 0 0;padding:10px 12px;background:var(--surface2);border-radius:var(--radius)}
+.sidebar-patient-label{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);font-weight:600}
+.sidebar-patient-name{font-size:13px;font-weight:600;margin-top:2px}
+.sidebar-nav{flex:1;padding:12px 8px;overflow-y:auto}
+.nav-label{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);font-weight:600;padding:8px 8px 4px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;transition:background .12s,color .12s;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:var(--accent-dim);color:var(--accent)}
+.nav-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px}
+.sidebar-footer{padding:12px 8px;border-top:1px solid var(--border)}
+.user-pill{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--radius);background:var(--surface2)}
+.user-avatar{width:28px;height:28px;border-radius:50%;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:11px;font-weight:700;flex-shrink:0}
+.user-name{font-size:12px;font-weight:600}
+.user-role{font-size:10px;color:var(--text3)}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;min-height:100vh}
+.topbar{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface);position:sticky;top:0;z-index:5}
+.topbar-title{font-size:16px;font-weight:700}
+.topbar-sub{font-size:12px;color:var(--text2);margin-top:1px}
+.page{padding:24px;max-width:1100px}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.card-body{padding:20px}
+.card-empty{padding:40px 20px;text-align:center;color:var(--text3);font-size:13px}
+
+/* DASHBOARD */
+.dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px}
+.stat-label{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);font-weight:600;margin-bottom:6px}
+.stat-value{font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.stat-sub{font-size:11px;color:var(--text2);margin-top:4px}
+.stat-green .stat-value{color:var(--green)}
+.stat-blue .stat-value{color:var(--accent)}
+.stat-yellow .stat-value{color:var(--yellow)}
+.stat-purple .stat-value{color:var(--purple)}
+.dash-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:1px;background:var(--border)}
+.tl-item{position:relative;padding-bottom:20px}
+.tl-dot{position:absolute;left:-23px;top:4px;width:10px;height:10px;border-radius:50%;border:2px solid var(--bg)}
+.tl-dot-med{background:var(--accent)}
+.tl-dot-vital{background:var(--green)}
+.tl-dot-evol{background:var(--purple)}
+.tl-dot-shift{background:var(--yellow)}
+.tl-time{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:4px}
+.tl-content{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 14px}
+.tl-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.tl-type-med{color:var(--accent)}
+.tl-type-vital{color:var(--green)}
+.tl-type-evol{color:var(--purple)}
+.tl-type-shift{color:var(--yellow)}
+.tl-text{font-size:13px}
+.tl-meta{font-size:11px;color:var(--text3);margin-top:4px}
+
+/* TABLE */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--border2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-blue{background:var(--accent-dim);color:var(--accent)}
+.badge-green{background:var(--green-dim);color:var(--green)}
+.badge-yellow{background:var(--yellow-dim);color:var(--yellow)}
+.badge-purple{background:var(--purple-dim);color:var(--purple)}
+.badge-orange{background:var(--orange-dim);color:var(--orange)}
+.badge-red{background:var(--red-dim);color:var(--red)}
+.badge-gray{background:var(--surface3);color:var(--text3)}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(2px);z-index:100;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);width:100%;max-width:560px}
+.modal-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:16px;font-weight:700}
+.modal-close{background:none;border:none;color:var(--text3);cursor:pointer;padding:4px;border-radius:4px;font-size:18px;line-height:1}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:24px}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* VITALS GRID */
+.vitals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.vital-box{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:12px;text-align:center}
+.vital-icon{font-size:18px;margin-bottom:6px}
+.vital-val{font-size:18px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.vital-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+
+/* EVOL */
+.evol-item{padding:14px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);margin-bottom:10px}
+.evol-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.evol-meta{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.evol-author{font-size:11px;color:var(--accent);font-weight:600}
+.evol-body{font-size:13px;line-height:1.6;white-space:pre-wrap}
+.evol-cat{margin-bottom:6px}
+
+/* SHIFT */
+.shift-active{background:var(--green-dim);border:1px solid rgba(63,185,80,.3);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.shift-dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* MISC */
+.loading{text-align:center;color:var(--text3);padding:40px;font-size:13px}
+.tag{display:inline-block;padding:1px 6px;background:var(--surface3);border-radius:4px;font-size:11px;color:var(--text2);font-family:'JetBrains Mono',monospace}
+.delete-btn{background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;border-radius:4px;transition:color .12s;font-size:14px}
+.delete-btn:hover{color:var(--red)}
+.hidden{display:none!important}
+.mt-16{margin-top:16px}
+.accent-text{color:var(--accent);font-size:12px}
+
+@media(max-width:900px){
+  .sidebar{width:56px}
+  .sidebar-logo-text,.sidebar-logo-sub,.sidebar-patient,.nav-label,.nav-item span,.user-name,.user-role{display:none}
+  .main{margin-left:56px}
+  .dash-grid{grid-template-columns:repeat(2,1fr)}
+  .dash-cols{grid-template-columns:1fr}
+  .vitals-grid{grid-template-columns:repeat(2,1fr)}
+  .form-row{grid-template-columns:1fr}
+}
+</style>
 </head>
-<body class="bg-gray-900 text-gray-100 font-sans min-h-screen flex flex-col items-center justify-center p-6">
+<body>
 
-    <div class="w-full max-w-md bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-700">
-        <!-- Cabeçalho -->
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="text-2xl font-bold tracking-wide text-indigo-400">⚡ Meu App</h1>
-            <span id="status-db" class="text-xs px-2.5 py-1 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">Desconectado</span>
+<div id="app-screen" class="app">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12h6"/><path d="M12 9v6"/></svg>
         </div>
+        <div>
+          <div class="sidebar-logo-text">Plantão Familiar</div>
+          <div class="sidebar-logo-sub">Acompanhamento</div>
+        </div>
+      </div>
+      <div class="sidebar-patient">
+        <div class="sidebar-patient-label">Paciente</div>
+        <div class="sidebar-patient-name" id="patient-name">— configurar —</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" onclick="goPage('dashboard')" data-page="dashboard">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Visão Geral</span>
+      </button>
+      <button class="nav-item" onclick="goPage('medications')" data-page="medications">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.5 20H4a2 2 0 01-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 011.66.9l.82 1.2a2 2 0 001.66.9H20a2 2 0 012 2v2"/><circle cx="17" cy="17" r="5"/><path d="M14 17h6"/></svg>
+        <span>Medicações</span>
+        <span class="nav-badge hidden" id="badge-meds">0</span>
+      </button>
+      <button class="nav-item" onclick="goPage('vitals')" data-page="vitals">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        <span>Sinais Vitais</span>
+      </button>
+      <button class="nav-item" onclick="goPage('evolution')" data-page="evolution">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+        <span>Evolução</span>
+      </button>
+      <button class="nav-item" onclick="goPage('shifts')" data-page="shifts">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        <span>Plantões</span>
+      </button>
+      <button class="nav-item" onclick="goPage('timeline')" data-page="timeline">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        <span>Timeline</span>
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-pill">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <div>
+          <div class="user-name" id="user-display-name">—</div>
+          <div class="user-role">Familiar</div>
+        </div>
+      </div>
+    </div>
+  </aside>
 
-        <!-- Formulário de Entrada -->
-        <form id="todo-form" class="flex gap-2 mb-6">
-            <input 
-                type="text" 
-                id="todo-input" 
-                placeholder="Nova tarefa..." 
-                required
-                class="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2.5 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 transition-colors"
-            >
-            <button 
-                type="submit"
-                class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition-colors cursor-pointer"
-            >
-                Adicionar
-            </button>
-        </form>
-
-        <!-- Lista de Itens -->
-        <ul id="todo-list" class="space-y-2 max-h-64 overflow-y-auto pr-1">
-            <!-- Os itens do banco vão aparecer aqui dentro -->
-            <li class="text-sm text-gray-400 text-center py-4">Carregando tarefas...</li>
-        </ul>
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="topbar-title">Visão Geral</div>
+        <div class="topbar-sub">Sistema de acompanhamento hospitalar colaborativo</div>
+      </div>
+      <span style="font-size:11px;color:var(--text3)" id="topbar-date"></span>
     </div>
 
-    <!-- Script de Lógica do App -->
-    <script>
-        // 1. CONFIGURAÇÃO DO SUPABASE
-        // Substitua com as credenciais do seu projeto no Supabase
-        const SUPABASE_URL = "SUA_SUPABASE_URL_AQUI";
-        const SUPABASE_ANON_KEY = "SUA_SUPABASE_ANON_KEY_AQUI";
+    <div id="page-dashboard" class="page">
+      <div class="dash-grid">
+        <div class="stat-card stat-blue">
+          <div class="stat-label">Última Medicação</div>
+          <div class="stat-value" id="dash-med-name" style="font-size:14px;margin-top:4px">—</div>
+          <div class="stat-sub" id="dash-med-sub">Nenhuma registrada</div>
+        </div>
+        <div class="stat-card stat-green">
+          <div class="stat-label">Saturação</div>
+          <div class="stat-value" id="dash-spo2">—</div>
+          <div class="stat-sub" id="dash-spo2-sub">Não registrada</div>
+        </div>
+        <div class="stat-card stat-yellow">
+          <div class="stat-label">Pressão Arterial</div>
+          <div class="stat-value" id="dash-bp" style="font-size:18px">—</div>
+          <div class="stat-sub" id="dash-bp-sub">Não registrada</div>
+        </div>
+        <div class="stat-card stat-purple">
+          <div class="stat-label">Temperatura</div>
+          <div class="stat-value" id="dash-temp">—</div>
+          <div class="stat-sub" id="dash-temp-sub">Não registrada</div>
+        </div>
+      </div>
+      <div id="dash-shift-banner" class="shift-active hidden">
+        <div class="shift-dot"></div>
+        <div>
+          <div style="font-size:13px;font-weight:600" id="dash-shift-name"></div>
+          <div style="font-size:11px;color:var(--text2)" id="dash-shift-time"></div>
+        </div>
+      </div>
+      <div class="dash-cols">
+        <div class="card">
+          <div class="card-header"><div class="card-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Últimas Atualizações
+          </div></div>
+          <div class="card-body" style="padding:12px 16px">
+            <div class="timeline" id="dash-timeline"><div class="card-empty">Nenhum evento ainda.</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Últimos Sinais Vitais
+          </div></div>
+          <div id="dash-vitals-body">
+            <div class="card-empty">Nenhum sinal vital registrado.</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        let supabase = null;
+    <div id="page-medications" class="page hidden">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.5 20H4a2 2 0 01-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 011.66.9l.82 1.2a2 2 0 001.66.9H20a2 2 0 012 2v2"/><circle cx="17" cy="17" r="5"/><path d="M14 17h6"/></svg>
+            Medicações
+          </div>
+          <button class="btn btn-primary btn-sm btn-auto" onclick="openModal('modal-med')">+ Registrar</button>
+        </div>
+        <div id="meds-content"><div class="card-empty">Nenhuma medicação registrada ainda.</div></div>
+      </div>
+    </div>
 
-        // Inicializa o cliente Supabase se as chaves forem preenchidas
-        if (SUPABASE_URL !== "SUA_SUPABASE_URL_AQUI") {
-            supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            const statusBadge = document.getElementById('status-db');
-            statusBadge.innerText = "Supabase Conectado";
-            statusBadge.className = "text-xs px-2.5 py-1 rounded-full bg-green-500/20 text-green-400 border border-green-500/30";
-        }
+    <div id="page-vitals" class="page hidden">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Sinais Vitais
+          </div>
+          <button class="btn btn-primary btn-sm btn-auto" onclick="openModal('modal-vital')">+ Registrar</button>
+        </div>
+        <div id="vitals-content"><div class="card-empty">Nenhum sinal vital registrado ainda.</div></div>
+      </div>
+    </div>
 
-        // Elementos do DOM
-        const todoForm = document.getElementById('todo-form');
-        const todoInput = document.getElementById('todo-input');
-        const todoList = document.getElementById('todo-list');
+    <div id="page-evolution" class="page hidden">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+            Evolução do Paciente
+          </div>
+          <button class="btn btn-primary btn-sm btn-auto" onclick="openModal('modal-evol')">+ Registrar</button>
+        </div>
+        <div id="evol-content"><div class="card-empty">Nenhuma evolução registrada ainda.</div></div>
+      </div>
+    </div>
 
-        // 2. BUSCAR TAREFAS DO BANCO (READ)
-        async function fetchTodos() {
-            if (!supabase) {
-                todoList.innerHTML = `<li class="text-sm text-amber-400 text-center py-4">Configure suas chaves do Supabase no código para testar!</li>`;
-                return;
-            }
+    <div id="page-shifts" class="page hidden">
+      <div id="shifts-banner" class="hidden"></div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            Plantões
+          </div>
+          <button class="btn btn-primary btn-sm btn-auto" onclick="openModal('modal-shift')">+ Registrar</button>
+        </div>
+        <div id="shifts-content"><div class="card-empty">Nenhum plantão registrado ainda.</div></div>
+      </div>
+    </div>
 
-            // Altere 'todos' para o nome da tabela que você criou no Supabase
-            const { data, error } = await supabase
-                .from('todos')
-                .select('*')
-                .order('id', { ascending: false });
+    <div id="page-timeline" class="page hidden">
+      <div class="card">
+        <div class="card-header"><div class="card-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          Timeline Cronológica
+        </div></div>
+        <div class="card-body"><div class="timeline" id="timeline-all"><div class="card-empty">Nenhum evento registrado ainda.</div></div></div>
+      </div>
+    </div>
+  </main>
+</div>
 
-            if (error) {
-                console.error('Erro ao buscar dados:', error);
-                return;
-            }
+<div class="modal-bg" id="modal-med">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Registrar Medicação</div>
+      <button class="modal-close" onclick="closeModal('modal-med')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="field"><label>Data</label><input type="date" id="med-date"/></div>
+        <div class="field"><label>Horário</label><input type="time" id="med-time"/></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Medicação *</label><input id="med-name" placeholder="Ex: Enoxaparina"/></div>
+        <div class="field"><label>Dosagem *</label><input id="med-dose" placeholder="Ex: 40mg"/></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Via de administração</label>
+          <select id="med-route">
+            <option>oral</option><option selected>intravenosa</option><option>subcutânea</option>
+            <option>intramuscular</option><option>tópica</option><option>inalatória</option>
+            <option>sublingual</option><option>retal</option>
+          </select>
+        </div>
+        <div class="field"><label>Profissional</label><input id="med-prof" placeholder="Ex: Enfermeira Ana"/></div>
+      </div>
+      <div class="field"><label>Observações</label><textarea id="med-notes" placeholder="Observações adicionais..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-med')">Cancelar</button>
+      <button class="btn btn-primary btn-auto" onclick="saveMed()">Salvar</button>
+    </div>
+  </div>
+</div>
 
-            renderTodos(data);
-        }
+<div class="modal-bg" id="modal-vital">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Registrar Sinais Vitais</div>
+      <button class="modal-close" onclick="closeModal('modal-vital')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="field"><label>Data</label><input type="date" id="vit-date"/></div>
+        <div class="field"><label>Horário</label><input type="time" id="vit-time"/></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Pressão Arterial</label><input id="vit-bp" placeholder="Ex: 12x8"/></div>
+        <div class="field"><label>FC (bpm)</label><input type="number" id="vit-hr" placeholder="Ex: 82"/></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Saturação (%)</label><input id="vit-spo2" placeholder="Ex: 96%"/></div>
+        <div class="field"><label>Temperatura (°C)</label><input type="number" step="0.1" id="vit-temp" placeholder="Ex: 36.5"/></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>FR (rpm)</label><input type="number" id="vit-rr" placeholder="Ex: 16"/></div>
+        <div class="field"><label>Glicemia</label><input id="vit-glucose" placeholder="Ex: 120 mg/dL"/></div>
+      </div>
+      <div class="field"><label>Observações</label><textarea id="vit-notes" placeholder="Observações..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-vital')">Cancelar</button>
+      <button class="btn btn-primary btn-auto" onclick="saveVital()">Salvar</button>
+    </div>
+  </div>
+</div>
 
-        // Renderizar elementos na tela
-        function renderTodos(todos) {
-            if (todos.length === 0) {
-                todoList.innerHTML = `<li class="text-sm text-gray-500 text-center py-4">Nenhuma tarefa encontrada.</li>`;
-                return;
-            }
+<div class="modal-bg" id="modal-evol">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Registrar Evolução</div>
+      <button class="modal-close" onclick="closeModal('modal-evol')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Categoria</label>
+        <select id="evol-cat">
+          <option>evolução</option><option>visita médica</option><option>exame</option>
+          <option>intercorrência</option><option>alteração de medicação</option><option>reclamação</option>
+        </select>
+      </div>
+      <div class="field"><label>Descrição *</label>
+        <textarea id="evol-text" style="min-height:140px" placeholder="Descreva o que aconteceu..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-evol')">Cancelar</button>
+      <button class="btn btn-primary btn-auto" onclick="saveEvol()">Salvar</button>
+    </div>
+  </div>
+</div>
 
-            todoList.innerHTML = todos.map(todo => `
-                <li class="flex items-center justify-between bg-gray-750 p-3 rounded-lg border border-gray-700/50">
-                    <span class="text-sm text-gray-200">${todo.title}</span>
-                    <button onclick="deleteTodo(${todo.id})" class="text-xs text-gray-500 hover:text-red-400 transition-colors cursor-pointer">
-                        Excluir
-                    </button>
-                </li>
-            `).join('');
-        }
+<div class="modal-bg" id="modal-shift">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Registrar Plantão</div>
+      <button class="modal-close" onclick="closeModal('modal-shift')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Nome do familiar *</label><input id="shift-name" placeholder="Ex: Gabriel"/></div>
+      <div class="form-row">
+        <div class="field"><label>Data entrada</label><input type="date" id="shift-edate"/></div>
+        <div class="field"><label>Hora entrada</label><input type="time" id="shift-etime"/></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Data saída</label><input type="date" id="shift-xdate"/></div>
+        <div class="field"><label>Hora saída</label><input type="time" id="shift-xtime"/></div>
+      </div>
+      <div class="field"><label>Observações</label><textarea id="shift-notes" placeholder="Observações do plantão..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-shift')">Cancelar</button>
+      <button class="btn btn-primary btn-auto" onclick="saveShift()">Salvar</button>
+    </div>
+  </div>
+</div>
 
-        // 3. INSERIR TAREFA NO BANCO (CREATE)
-        todoForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const title = todoInput.value.trim();
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, updateDoc, deleteDoc, doc,
+  onSnapshot, query, orderBy, serverTimestamp, setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-            if (!supabase || !title) return;
+// ─── CONFIG ───────────────────────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID",
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-            const { error } = await supabase
-                .from('todos')
-                .insert([{ title: title }]);
+// ─── STATE ────────────────────────────────────────────────────────────────
+// Usuário mockado (falso) criado para substituir o login
+let currentUser = { displayName: "Familiar Padrão" }; 
 
-            if (error) {
-                alert('Erro ao salvar tarefa!');
-                console.error(error);
-            } else {
-                todoInput.value = '';
-                fetchTodos(); // Atualiza a lista
-            }
-        });
+let meds = [], vitals = [], evols = [], shifts = [];
+let currentPage = "dashboard";
+let unsubscribers = [];
 
-        // 4. DELETAR TAREFA DO BANCO (DELETE)
-        async function deleteTodo(id) {
-            if (!supabase) return;
+// ─── HELPERS ──────────────────────────────────────────────────────────────
+const fmt = ts => {
+  if (!ts) return "—";
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString("pt-BR") + " " + d.toLocaleTimeString("pt-BR", {hour:"2-digit",minute:"2-digit"});
+};
+const fmtDate = ts => { if (!ts) return "—"; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleDateString("pt-BR"); };
+const fmtTime = ts => { if (!ts) return "—"; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); };
+const initials = name => name ? name.split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2) : "?";
+const esc = s => String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const $ = id => document.getElementById(id);
 
-            const { error } = await supabase
-                .from('todos')
-                .delete()
-                .eq('id', id);
+// ─── APP INITIALIZATION ───────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  // Inicialização direta do App com o usuário Mockado
+  $("user-display-name").textContent = currentUser.displayName;
+  $("user-avatar").textContent = initials(currentUser.displayName);
+  $("topbar-date").textContent = new Date().toLocaleDateString("pt-BR", {weekday:"long",day:"2-digit",month:"long"});
+  
+  // Chama as inscrições do Firestore
+  subscribeData();
+});
 
-            if (error) {
-                alert('Erro ao deletar tarefa!');
-                console.error(error);
-            } else {
-                fetchTodos(); // Atualiza a lista
-            }
-        }
+// ─── FIRESTORE SUBSCRIPTIONS ──────────────────────────────────────────────
+function subscribeData() {
+  const sub = (col, arr, setter) => onSnapshot(
+    query(collection(db, col), orderBy("createdAt","desc")),
+    snap => { arr.length=0; snap.docs.forEach(d => arr.push({id:d.id,...d.data()})); setter(); }
+  );
+  unsubscribers.push(
+    sub("medications", meds, () => { renderMeds(); renderDash(); }),
+    sub("vitals", vitals, () => { renderVitals(); renderDash(); }),
+    sub("evolutions", evols, () => { renderEvols(); renderDash(); }),
+    sub("shifts", shifts, () => { renderShifts(); renderDash(); })
+  );
+}
 
-        // Executa ao carregar a página
-        fetchTodos();
-    </script>
+// ─── NAVIGATION ───────────────────────────────────────────────────────────
+const pageTitles = {dashboard:"Visão Geral",medications:"Medicações",vitals:"Sinais Vitais",evolution:"Evolução do Paciente",shifts:"Plantões",timeline:"Timeline"};
+
+window.goPage = page => {
+  currentPage = page;
+  document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+  $("page-"+page).classList.remove("hidden");
+  document.querySelector(`[data-page="${page}"]`).classList.add("active");
+  $("topbar-title").textContent = pageTitles[page];
+  if (page === "timeline") renderTimeline();
+};
+
+// ─── MODALS ───────────────────────────────────────────────────────────────
+window.openModal = id => $(id).classList.add("open");
+window.closeModal = id => $(id).classList.remove("open");
+document.querySelectorAll(".modal-bg").forEach(m => m.addEventListener("click", e => { if(e.target === m) m.classList.remove("open"); }));
+
+// ─── ROUTE BADGE COLORS ───────────────────────────────────────────────────
+const routeBadge = {oral:"badge-green",intravenosa:"badge-blue",subcutânea:"badge-yellow",intramuscular:"badge-orange",tópica:"badge-purple",inalatória:"badge-blue",sublingual:"badge-yellow",retal:"badge-orange"};
+const catBadge = {evolução:"badge-purple","visita médica":"badge-blue",exame:"badge-yellow",intercorrência:"badge-red","alteração de medicação":"badge-orange",reclamação:"badge-orange"};
+
+// ─── RENDER DASHBOARD ─────────────────────────────────────────────────────
+function renderDash() {
+  const lm = meds[0], lv = vitals[0];
+  const activeShift = shifts.find(s => !s.exitTime);
+
+  // Stats
+  $("dash-med-name").textContent = lm ? lm.name : "—";
+  $("dash-med-sub").textContent = lm ? `${lm.dose} · ${lm.time || fmtTime(lm.createdAt)}` : "Nenhuma registrada";
+  $("dash-spo2").textContent = lv?.spo2 || "—";
+  $("dash-spo2-sub").textContent = lv ? fmtTime(lv.createdAt) : "Não registrada";
+  $("dash-bp").textContent = lv?.bp || "—";
+  $("dash-bp-sub").textContent = lv?.hr ? `FC: ${lv.hr} bpm` : "Não registrada";
+  $("dash-temp").textContent = lv?.temp ? `${lv.temp}°` : "—";
+  $("dash-temp-sub").textContent = lv?.rr ? `FR: ${lv.rr} rpm` : "Não registrada";
+
+  // Active shift banner
+  const banner = $("dash-shift-banner");
+  if (activeShift) {
+    banner.classList.remove("hidden");
+    $("dash-shift-name").textContent = activeShift.familiarName + " em plantão";
+    $("dash-shift-time").textContent = "desde " + (activeShift.entryTime || fmtTime(activeShift.createdAt));
+  } else {
+    banner.classList.add("hidden");
+  }
+
+  // Recent events timeline
+  const events = [
+    ...meds.slice(0,3).map(m=>({ts:m.createdAt,text:`Medicação: ${m.name} ${m.dose}`,type:"med"})),
+    ...vitals.slice(0,2).map(v=>({ts:v.createdAt,text:`Sinais vitais — PA ${v.bp||"—"}`,type:"vital"})),
+    ...evols.slice(0,2).map(e=>({ts:e.createdAt,text:e.text.slice(0,80)+(e.text.length>80?"…":""),type:"evol"})),
+  ].sort((a,b)=>(b.ts?.seconds||0)-(a.ts?.seconds||0)).slice(0,5);
+
+  const typeLabel = {med:"Medicação",vital:"Sinais Vitais",evol:"Evolução"};
+  $("dash-timeline").innerHTML = events.length ? events.map(ev=>`
+    <div class="tl-item">
+      <div class="tl-dot tl-dot-${esc(ev.type)}"></div>
+      <div class="tl-time">${fmt(ev.ts)}</div>
+      <div class="tl-content">
+        <div class="tl-type tl-type-${esc(ev.type)}">${typeLabel[ev.type]}</div>
+        <div class="tl-text">${esc(ev.text)}</div>
+      </div>
+    </div>`).join("") : '<div style="color:var(--text3);font-size:13px;padding:20px 0">Nenhum evento ainda.</div>';
+
+  // Last vitals grid
+  if (lv) {
+    $("dash-vitals-body").innerHTML = `<div class="card-body">
+      <div class="vitals-grid">
+        ${[
+          {label:"Pressão",val:lv.bp||"—",icon:"🩺"},
+          {label:"FC",val:lv.hr?lv.hr+" bpm":"—",icon:"❤️"},
+          {label:"Saturação",val:lv.spo2||"—",icon:"💧"},
+          {label:"Temperatura",val:lv.temp?lv.temp+"°C":"—",icon:"🌡️"},
+          {label:"FR",val:lv.rr?lv.rr+" rpm":"—",icon:"🫁"},
+          {label:"Glicemia",val:lv.glucose||"—",icon:"🩸"},
+        ].map(v=>`<div class="vital-box"><div class="vital-icon">${v.icon}</div><div class="vital-val">${esc(v.val)}</div><div class="vital-lbl">${v.label}</div></div>`).join("")}
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:12px;text-align:center">
+        Registrado em ${fmt(lv.createdAt)} por ${esc(lv.registeredBy)}
+      </div>
+    </div>`;
+  } else {
+    $("dash-vitals-body").innerHTML = '<div class="card-empty">Nenhum sinal vital registrado.</div>';
+  }
+
+  // Badge count
+  const badge = $("badge-meds");
+  if (meds.length > 0) { badge.textContent = meds.length; badge.classList.remove("hidden"); }
+  else badge.classList.add("hidden");
+}
+
+// ─── RENDER MEDICATIONS ───────────────────────────────────────────────────
+function renderMeds() {
+  if (!meds.length) { $("meds-content").innerHTML = '<div class="card-empty">Nenhuma medicação registrada ainda.</div>'; return; }
+  $("meds-content").innerHTML = `<div class="table-wrap"><table>
+    <thead><tr><th>Data/Hora</th><th>Medicação</th><th>Dosagem</th><th>Via</th><th>Profissional</th><th>Registrado por</th><th>Obs.</th><th></th></tr></thead>
+    <tbody>${meds.map(m=>`<tr>
+      <td><span class="tag">${esc(m.date||fmtDate(m.createdAt))} ${esc(m.time||fmtTime(m.createdAt))}</span></td>
+      <td style="font-weight:600">${esc(m.name)}</td>
+      <td>${esc(m.dose)}</td>
+      <td><span class="badge ${routeBadge[m.route]||"badge-blue"}">${esc(m.route)}</span></td>
+      <td>${esc(m.professional||"—")}</td>
+      <td><span class="accent-text">${esc(m.registeredBy)}</span></td>
+      <td style="color:var(--text2);max-width:160px">${esc(m.notes||"—")}</td>
+      <td><button class="delete-btn" onclick="delDoc('medications','${m.id}')">🗑</button></td>
+    </tr>`).join("")}</tbody>
+  </table></div>`;
+}
+
+// ─── RENDER VITALS ────────────────────────────────────────────────────────
+function renderVitals() {
+  if (!vitals.length) { $("vitals-content").innerHTML = '<div class="card-empty">Nenhum sinal vital registrado ainda.</div>'; return; }
+  $("vitals-content").innerHTML = `<div class="table-wrap"><table>
+    <thead><tr><th>Data/Hora</th><th>PA</th><th>FC</th><th>SpO2</th><th>Temperatura</th><th>FR</th><th>Glicemia</th><th>Registrado por</th><th></th></tr></thead>
+    <tbody>${vitals.map(v=>`<tr>
+      <td><span class="tag">${esc(v.date||fmtDate(v.createdAt))} ${esc(v.time||fmtTime(v.createdAt))}</span></td>
+      <td>${esc(v.bp||"—")}</td>
+      <td>${v.hr?esc(v.hr)+" bpm":"—"}</td>
+      <td>${v.spo2?`<span class="badge ${parseInt(v.spo2)>=95?"badge-green":"badge-red"}">${esc(v.spo2)}</span>`:"—"}</td>
+      <td>${v.temp?esc(v.temp)+"°C":"—"}</td>
+      <td>${v.rr?esc(v.rr)+" rpm":"—"}</td>
+      <td>${esc(v.glucose||"—")}</td>
+      <td><span class="accent-text">${esc(v.registeredBy)}</span></td>
+      <td><button class="delete-btn" onclick="delDoc('vitals','${v.id}')">🗑</button></td>
+    </tr>`).join("")}</tbody>
+  </table></div>`;
+}
+
+// ─── RENDER EVOLUTIONS ────────────────────────────────────────────────────
+function renderEvols() {
+  if (!evols.length) { $("evol-content").innerHTML = '<div class="card-empty">Nenhuma evolução registrada ainda.</div>'; return; }
+  $("evol-content").innerHTML = `<div class="card-body">${evols.map(e=>`
+    <div class="evol-item">
+      <div class="evol-header">
+        <div>
+          <div class="evol-cat"><span class="badge ${catBadge[e.category]||"badge-purple"}">${esc(e.category)}</span></div>
+          <div class="evol-meta">${fmt(e.createdAt)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="evol-author">${esc(e.registeredBy)}</div>
+          <button class="delete-btn" onclick="delDoc('evolutions','${e.id}')">🗑</button>
+        </div>
+      </div>
+      <div class="evol-body">${esc(e.text)}</div>
+    </div>`).join("")}</div>`;
+}
+
+// ─── RENDER SHIFTS ────────────────────────────────────────────────────────
+function renderShifts() {
+  const activeShift = shifts.find(s => !s.exitTime);
+  const banner = $("shifts-banner");
+  if (activeShift) {
+    banner.classList.remove("hidden");
+    banner.innerHTML = `<div class="shift-active" style="margin-bottom:16px">
+      <div class="shift-dot"></div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">${esc(activeShift.familiarName)} em plantão</div>
+        <div style="font-size:11px;color:var(--text2)">desde ${esc(activeShift.entryDate||"")} ${esc(activeShift.entryTime||"")}</div>
+      </div>
+      <button class="btn btn-sm" style="background:var(--yellow-dim);color:var(--yellow);border:1px solid rgba(210,153,34,.3)" onclick="endShift('${activeShift.id}')">Encerrar plantão</button>
+    </div>`;
+  } else {
+    banner.classList.add("hidden");
+  }
+
+  if (!shifts.length) { $("shifts-content").innerHTML = '<div class="card-empty">Nenhum plantão registrado ainda.</div>'; return; }
+  $("shifts-content").innerHTML = `<div class="table-wrap"><table>
+    <thead><tr><th>Familiar</th><th>Entrada</th><th>Saída</th><th>Obs.</th><th>Status</th><th></th></tr></thead>
+    <tbody>${shifts.map(s=>`<tr>
+      <td style="font-weight:600">${esc(s.familiarName)}</td>
+      <td><span class="tag">${esc(s.entryDate||"")} ${esc(s.entryTime||"")}</span></td>
+      <td>${s.exitTime?`<span class="tag">${esc(s.exitDate||"")} ${esc(s.exitTime)}</span>`:"—"}</td>
+      <td style="color:var(--text2)">${esc(s.notes||"—")}</td>
+      <td>${!s.exitTime?'<span class="badge badge-green">Ativo</span>':'<span class="badge badge-gray">Encerrado</span>'}</td>
+      <td><button class="delete-btn" onclick="delDoc('shifts','${s.id}')">🗑</button></td>
+    </tr>`).join("")}</tbody>
+  </table></div>`;
+}
+
+// ─── RENDER TIMELINE ──────────────────────────────────────────────────────
+function renderTimeline() {
+  const all = [
+    ...meds.map(m=>({ts:m.createdAt,type:"med",label:"Medicação",text:`${m.name} ${m.dose} — via ${m.route}${m.professional?" · "+m.professional:""}`,meta:m.registeredBy})),
+    ...vitals.map(v=>({ts:v.createdAt,type:"vital",label:"Sinais Vitais",text:`PA: ${v.bp||"—"} · FC: ${v.hr?v.hr+" bpm":"—"} · SpO2: ${v.spo2||"—"} · Temp: ${v.temp?v.temp+"°C":"—"}`,meta:v.registeredBy})),
+    ...evols.map(e=>({ts:e.createdAt,type:"evol",label:e.category||"Evolução",text:e.text,meta:e.registeredBy})),
+    ...shifts.map(s=>({ts:s.createdAt,type:"shift",label:"Plantão",text:`${s.familiarName} — entrada ${s.entryTime||""}${s.exitTime?" / saída "+s.exitTime:" (ativo)"}`,meta:s.registeredBy})),
+  ].sort((a,b)=>(b.ts?.seconds||0)-(a.ts?.seconds||0));
+
+  $("timeline-all").innerHTML = all.length ? all.map(ev=>`
+    <div class="tl-item">
+      <div class="tl-dot tl-dot-${esc(ev.type)}"></div>
+      <div class="tl-time">${fmt(ev.ts)}</div>
+      <div class="tl-content">
+        <div class="tl-type tl-type-${esc(ev.type)}">${esc(ev.label)}</div>
+        <div class="tl-text">${esc(ev.text)}</div>
+        <div class="tl-meta">Registrado por ${esc(ev.meta)}</div>
+      </div>
+    </div>`).join("") : '<div style="color:var(--text3);font-size:13px">Nenhum evento registrado ainda.</div>';
+}
+
+// ─── SAVE ACTIONS ─────────────────────────────────────────────────────────
+const registeredBy = () => currentUser?.displayName || "?";
+
+window.saveMed = async () => {
+  const name = $("med-name").value.trim(), dose = $("med-dose").value.trim();
+  if (!name || !dose) return;
+  await addDoc(collection(db,"medications"), {
+    date:$("med-date").value, time:$("med-time").value, name, dose,
+    route:$("med-route").value, professional:$("med-prof").value,
+    notes:$("med-notes").value, registeredBy:registeredBy(), type:"med", createdAt:serverTimestamp()
+  });
+  ["med-date","med-time","med-name","med-dose","med-prof","med-notes"].forEach(id=>$(id).value="");
+  closeModal("modal-med");
+};
+
+window.saveVital = async () => {
+  await addDoc(collection(db,"vitals"), {
+    date:$("vit-date").value, time:$("vit-time").value, bp:$("vit-bp").value,
+    hr:$("vit-hr").value, spo2:$("vit-spo2").value, temp:$("vit-temp").value,
+    rr:$("vit-rr").value, glucose:$("vit-glucose").value, notes:$("vit-notes").value,
+    registeredBy:registeredBy(), type:"vital", createdAt:serverTimestamp()
+  });
+  ["vit-date","vit-time","vit-bp","vit-hr","vit-spo2","vit-temp","vit-rr","vit-glucose","vit-notes"].forEach(id=>$(id).value="");
+  closeModal("modal-vital");
+};
+
+window.saveEvol = async () => {
+  const text = $("evol-text").value.trim();
+  if (!text) return;
+  await addDoc(collection(db,"evolutions"), {
+    category:$("evol-cat").value, text, registeredBy:registeredBy(), type:"evol", createdAt:serverTimestamp()
+  });
+  $("evol-text").value="";
+  closeModal("modal-evol");
+};
+
+window.saveShift = async () => {
+  const familiarName = $("shift-name").value.trim();
+  if (!familiarName) return;
+  await addDoc(collection(db,"shifts"), {
+    familiarName, entryDate:$("shift-edate").value, entryTime:$("shift-etime").value,
+    exitDate:$("shift-xdate").value, exitTime:$("shift-xtime").value,
+    notes:$("shift-notes").value, registeredBy:registeredBy(), type:"shift", createdAt:serverTimestamp()
+  });
+  ["shift-name","shift-edate","shift-etime","shift-xdate","shift-xtime","shift-notes"].forEach(id=>$(id).value="");
+  closeModal("modal-shift");
+};
+
+window.endShift = async id => {
+  const now = new Date();
+  await updateDoc(doc(db,"shifts",id), {
+    exitTime: now.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),
+    exitDate: now.toLocaleDateString("pt-BR")
+  });
+};
+
+window.delDoc = async (col, id) => {
+  if (confirm("Confirmar exclusão?")) await deleteDoc(doc(db, col, id));
+};
+</script>
 </body>
 </html>
