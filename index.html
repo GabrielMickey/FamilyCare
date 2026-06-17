@@ -20,8 +20,6 @@
   --radius:8px;--radius-lg:12px;--shadow:0 1px 3px rgba(0,0,0,.4);
 }
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5}
-
-/* FORM FIELDS (used in sidebar + modals) */
 .field{margin-bottom:16px}
 .field label{display:block;font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
 .field input,.field select,.field textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color .15s}
@@ -36,9 +34,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
 .btn-ghost:hover{color:var(--text);border-color:var(--text3)}
 .btn-auto{width:auto}
-.err{color:var(--red);font-size:12px;margin-top:12px;padding:10px 12px;background:var(--red-dim);border-radius:var(--radius);border:1px solid rgba(248,81,73,.3)}
-
-/* APP SHELL */
+.btn-pdf{background:var(--red-dim);color:var(--red);border:1px solid rgba(248,81,73,.3)}
+.btn-pdf:hover{opacity:.85}
 .app{display:flex;min-height:100vh}
 .sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:10}
 .sidebar-header{padding:20px 16px 16px;border-bottom:1px solid var(--border)}
@@ -56,22 +53,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .nav-item.active{background:var(--accent-dim);color:var(--accent)}
 .nav-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px}
 .sidebar-footer{padding:12px 8px;border-top:1px solid var(--border)}
-
-/* MAIN */
 .main{margin-left:220px;flex:1;min-height:100vh}
 .topbar{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface);position:sticky;top:0;z-index:5}
 .topbar-title{font-size:16px;font-weight:700}
 .topbar-sub{font-size:12px;color:var(--text2);margin-top:1px}
 .page{padding:24px;max-width:1100px}
-
-/* CARDS */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
 .card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 .card-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
 .card-body{padding:20px}
 .card-empty{padding:40px 20px;text-align:center;color:var(--text3);font-size:13px}
-
-/* DASHBOARD */
 .dash-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px}
 .stat-label{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);font-weight:600;margin-bottom:6px}
@@ -82,35 +73,22 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .stat-yellow .stat-value{color:var(--yellow)}
 .stat-purple .stat-value{color:var(--purple)}
 .dash-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-
-/* TIMELINE */
 .timeline{position:relative;padding-left:28px}
 .timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:1px;background:var(--border)}
 .tl-item{position:relative;padding-bottom:20px}
 .tl-dot{position:absolute;left:-23px;top:4px;width:10px;height:10px;border-radius:50%;border:2px solid var(--bg)}
-.tl-dot-med{background:var(--accent)}
-.tl-dot-vital{background:var(--green)}
-.tl-dot-evol{background:var(--purple)}
-.tl-dot-shift{background:var(--yellow)}
+.tl-dot-med{background:var(--accent)}.tl-dot-vital{background:var(--green)}.tl-dot-evol{background:var(--purple)}.tl-dot-shift{background:var(--yellow)}.tl-dot-doc{background:var(--orange)}
 .tl-time{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:4px}
 .tl-content{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 14px}
 .tl-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
-.tl-type-med{color:var(--accent)}
-.tl-type-vital{color:var(--green)}
-.tl-type-evol{color:var(--purple)}
-.tl-type-shift{color:var(--yellow)}
-.tl-text{font-size:13px}
-.tl-meta{font-size:11px;color:var(--text3);margin-top:4px}
-
-/* TABLE */
+.tl-type-med{color:var(--accent)}.tl-type-vital{color:var(--green)}.tl-type-evol{color:var(--purple)}.tl-type-shift{color:var(--yellow)}.tl-type-doc{color:var(--orange)}
+.tl-text{font-size:13px}.tl-meta{font-size:11px;color:var(--text3);margin-top:4px}
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th{text-align:left;padding:10px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);border-bottom:1px solid var(--border);white-space:nowrap}
 td{padding:10px 12px;border-bottom:1px solid var(--border2);vertical-align:top}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(--surface2)}
-
-/* BADGES */
 .badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
 .badge-blue{background:var(--accent-dim);color:var(--accent)}
 .badge-green{background:var(--green-dim);color:var(--green)}
@@ -119,8 +97,6 @@ tr:hover td{background:var(--surface2)}
 .badge-orange{background:var(--orange-dim);color:var(--orange)}
 .badge-red{background:var(--red-dim);color:var(--red)}
 .badge-gray{background:var(--surface3);color:var(--text3)}
-
-/* MODAL */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(2px);z-index:100;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto}
 .modal-bg.open{display:flex}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);width:100%;max-width:560px}
@@ -131,28 +107,20 @@ tr:hover td{background:var(--surface2)}
 .modal-body{padding:24px}
 .modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-
-/* VITALS GRID */
 .vitals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .vital-box{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:12px;text-align:center}
 .vital-icon{font-size:18px;margin-bottom:6px}
 .vital-val{font-size:18px;font-weight:700;font-family:'JetBrains Mono',monospace}
 .vital-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
-
-/* EVOL */
 .evol-item{padding:14px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);margin-bottom:10px}
 .evol-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
 .evol-meta{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace}
 .evol-author{font-size:11px;color:var(--accent);font-weight:600}
 .evol-body{font-size:13px;line-height:1.6;white-space:pre-wrap}
 .evol-cat{margin-bottom:6px}
-
-/* SHIFT */
 .shift-active{background:var(--green-dim);border:1px solid rgba(63,185,80,.3);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
 .shift-dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;flex-shrink:0}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-
-/* MISC */
 .loading{text-align:center;color:var(--text3);padding:40px;font-size:13px}
 .tag{display:inline-block;padding:1px 6px;background:var(--surface3);border-radius:4px;font-size:11px;color:var(--text2);font-family:'JetBrains Mono',monospace}
 .delete-btn{background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;border-radius:4px;transition:color .12s;font-size:14px}
@@ -160,7 +128,16 @@ tr:hover td{background:var(--surface2)}
 .hidden{display:none!important}
 .mt-16{margin-top:16px}
 .accent-text{color:var(--accent);font-size:12px}
-
+.doc-item{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);margin-bottom:8px}
+.doc-info{display:flex;align-items:center;gap:10px}
+.doc-icon{font-size:20px}
+.doc-name{font-size:13px;font-weight:600}
+.doc-meta{font-size:11px;color:var(--text3);margin-top:2px}
+.doc-actions{display:flex;gap:6px;flex-shrink:0}
+.file-drop{border:2px dashed var(--border);border-radius:var(--radius);padding:28px;text-align:center;cursor:pointer;transition:border-color .15s;color:var(--text3);font-size:13px}
+.file-drop:hover,.file-drop.drag{border-color:var(--accent);color:var(--accent)}
+.upload-progress{height:4px;background:var(--border);border-radius:4px;overflow:hidden;margin-top:10px}
+.upload-progress-bar{height:100%;background:var(--accent);transition:width .3s;width:0}
 @media(max-width:900px){
   .sidebar{width:56px}
   .sidebar-logo-text,.sidebar-logo-sub,.sidebar-patient,.nav-label,.nav-item span,.sidebar-footer{display:none}
@@ -174,7 +151,6 @@ tr:hover td{background:var(--surface2)}
 </head>
 <body>
 
-<!-- ═══ APP ═══ -->
 <div id="app-screen" class="app">
   <aside class="sidebar">
     <div class="sidebar-header">
@@ -214,6 +190,11 @@ tr:hover td{background:var(--surface2)}
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
         <span>Plantões</span>
       </button>
+      <button class="nav-item" onclick="goPage('docs')" data-page="docs">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span>Documentos</span>
+        <span class="nav-badge hidden" id="badge-docs">0</span>
+      </button>
       <button class="nav-item" onclick="goPage('timeline')" data-page="timeline">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
         <span>Timeline</span>
@@ -233,7 +214,10 @@ tr:hover td{background:var(--surface2)}
         <div class="topbar-title" id="topbar-title">Visão Geral</div>
         <div class="topbar-sub">Sistema de acompanhamento hospitalar colaborativo</div>
       </div>
-      <span style="font-size:11px;color:var(--text3)" id="topbar-date"></span>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn btn-sm btn-pdf btn-auto" onclick="exportPDF()">📄 Exportar PDF</button>
+        <span style="font-size:11px;color:var(--text3)" id="topbar-date"></span>
+      </div>
     </div>
 
     <!-- DASHBOARD -->
@@ -282,9 +266,7 @@ tr:hover td{background:var(--surface2)}
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
             Últimos Sinais Vitais
           </div></div>
-          <div id="dash-vitals-body">
-            <div class="card-empty">Nenhum sinal vital registrado.</div>
-          </div>
+          <div id="dash-vitals-body"><div class="card-empty">Nenhum sinal vital registrado.</div></div>
         </div>
       </div>
     </div>
@@ -346,6 +328,20 @@ tr:hover td{background:var(--surface2)}
       </div>
     </div>
 
+    <!-- DOCUMENTOS -->
+    <div id="page-docs" class="page hidden">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Documentos Anexados
+          </div>
+          <button class="btn btn-primary btn-sm btn-auto" onclick="openModal('modal-doc')">+ Anexar</button>
+        </div>
+        <div id="docs-content"><div class="card-empty">Nenhum documento anexado ainda.</div></div>
+      </div>
+    </div>
+
     <!-- TIMELINE -->
     <div id="page-timeline" class="page hidden">
       <div class="card">
@@ -359,15 +355,10 @@ tr:hover td{background:var(--surface2)}
   </main>
 </div>
 
-<!-- ═══ MODALS ═══ -->
-
-<!-- Med Modal -->
+<!-- MODALS (inalterados exceto evol que ganhou campo data) -->
 <div class="modal-bg" id="modal-med">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Registrar Medicação</div>
-      <button class="modal-close" onclick="closeModal('modal-med')">✕</button>
-    </div>
+    <div class="modal-header"><div class="modal-title">Registrar Medicação</div><button class="modal-close" onclick="closeModal('modal-med')">✕</button></div>
     <div class="modal-body">
       <div class="form-row">
         <div class="field"><label>Data</label><input type="date" id="med-date"/></div>
@@ -379,11 +370,7 @@ tr:hover td{background:var(--surface2)}
       </div>
       <div class="form-row">
         <div class="field"><label>Via de administração</label>
-          <select id="med-route">
-            <option>oral</option><option selected>intravenosa</option><option>subcutânea</option>
-            <option>intramuscular</option><option>tópica</option><option>inalatória</option>
-            <option>sublingual</option><option>retal</option>
-          </select>
+          <select id="med-route"><option>oral</option><option selected>intravenosa</option><option>subcutânea</option><option>intramuscular</option><option>tópica</option><option>inalatória</option><option>sublingual</option><option>retal</option></select>
         </div>
         <div class="field"><label>Profissional</label><input id="med-prof" placeholder="Ex: Enfermeira Ana"/></div>
       </div>
@@ -396,13 +383,9 @@ tr:hover td{background:var(--surface2)}
   </div>
 </div>
 
-<!-- Vital Modal -->
 <div class="modal-bg" id="modal-vital">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Registrar Sinais Vitais</div>
-      <button class="modal-close" onclick="closeModal('modal-vital')">✕</button>
-    </div>
+    <div class="modal-header"><div class="modal-title">Registrar Sinais Vitais</div><button class="modal-close" onclick="closeModal('modal-vital')">✕</button></div>
     <div class="modal-body">
       <div class="form-row">
         <div class="field"><label>Data</label><input type="date" id="vit-date"/></div>
@@ -429,19 +412,13 @@ tr:hover td{background:var(--surface2)}
   </div>
 </div>
 
-<!-- Evol Modal -->
 <div class="modal-bg" id="modal-evol">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Registrar Evolução</div>
-      <button class="modal-close" onclick="closeModal('modal-evol')">✕</button>
-    </div>
+    <div class="modal-header"><div class="modal-title">Registrar Evolução</div><button class="modal-close" onclick="closeModal('modal-evol')">✕</button></div>
     <div class="modal-body">
+      <div class="field"><label>Data do ocorrido *</label><input type="date" id="evol-date"/></div>
       <div class="field"><label>Categoria</label>
-        <select id="evol-cat">
-          <option>evolução</option><option>visita médica</option><option>exame</option>
-          <option>intercorrência</option><option>alteração de medicação</option><option>reclamação</option>
-        </select>
+        <select id="evol-cat"><option>evolução</option><option>visita médica</option><option>exame</option><option>intercorrência</option><option>alteração de medicação</option><option>reclamação</option></select>
       </div>
       <div class="field"><label>Descrição *</label>
         <textarea id="evol-text" style="min-height:140px" placeholder="Descreva o que aconteceu..."></textarea>
@@ -454,13 +431,9 @@ tr:hover td{background:var(--surface2)}
   </div>
 </div>
 
-<!-- Shift Modal -->
 <div class="modal-bg" id="modal-shift">
   <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Registrar Plantão</div>
-      <button class="modal-close" onclick="closeModal('modal-shift')">✕</button>
-    </div>
+    <div class="modal-header"><div class="modal-title">Registrar Plantão</div><button class="modal-close" onclick="closeModal('modal-shift')">✕</button></div>
     <div class="modal-body">
       <div class="field"><label>Nome do familiar *</label><input id="shift-name" placeholder="Ex: Gabriel"/></div>
       <div class="form-row">
@@ -480,46 +453,81 @@ tr:hover td{background:var(--surface2)}
   </div>
 </div>
 
-<!-- ═══ SUPABASE + LOGIC ═══ -->
+<!-- DOC MODAL (novo) -->
+<div class="modal-bg" id="modal-doc">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Anexar Documento</div><button class="modal-close" onclick="closeModal('modal-doc')">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Título *</label><input id="doc-title" placeholder="Ex: Resultado do hemograma"/></div>
+      <div class="form-row">
+        <div class="field"><label>Categoria</label>
+          <select id="doc-cat"><option>exame</option><option>anamnese</option><option>histórico médico</option><option>receita</option><option>laudo</option><option>outro</option></select>
+        </div>
+        <div class="field"><label>Data do documento</label><input type="date" id="doc-date"/></div>
+      </div>
+      <div class="field"><label>Observações</label><textarea id="doc-notes" placeholder="Anotações sobre este documento..."></textarea></div>
+      <div class="field"><label>Arquivo *</label>
+        <div class="file-drop" id="file-drop" onclick="document.getElementById('file-input').click()"
+          ondragover="event.preventDefault();this.classList.add('drag')"
+          ondragleave="this.classList.remove('drag')"
+          ondrop="handleDrop(event)">
+          📎 Clique ou arraste o arquivo aqui<br>
+          <small style="margin-top:4px;display:block;color:var(--text3)">PDF, imagem, Word, etc. — máx. 10 MB</small>
+        </div>
+        <input type="file" id="file-input" style="display:none" onchange="handleFileSelect(event)"/>
+        <div id="file-selected" style="margin-top:8px;font-size:12px;color:var(--accent)"></div>
+        <div class="upload-progress hidden" id="upload-progress"><div class="upload-progress-bar" id="upload-bar"></div></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-doc')">Cancelar</button>
+      <button class="btn btn-primary btn-auto" onclick="saveDoc()">Salvar</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-// ─── CONFIG SUPABASE ──────────────────────────────────────────────────────
 const SUPABASE_URL = "https://kvjftcxbendrchkrcdrk.supabase.co";
 const SUPABASE_KEY = "sb_publishable_azAMN84Nxhr_9gqpwo2GRA_vQfld0Kv";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ─── STATE ────────────────────────────────────────────────────────────────
 let userName = "Familiar";
-let meds = [], vitals = [], evols = [], shifts = [];
+let meds=[], vitals=[], evols=[], shifts=[], docs=[];
 let currentPage = "dashboard";
 let isRefreshing = false;
+let selectedFile = null;
 
-// ─── HELPERS ──────────────────────────────────────────────────────────────
-const parseDate = ts => {
-  if (!ts) return null;
-  if (ts.toDate) return ts.toDate();
-  const d = new Date(ts);
-  return Number.isNaN(d.getTime()) ? null : d;
-};
-const timeValue = ts => {
-  const d = parseDate(ts);
-  return d ? d.getTime() : 0;
-};
-const fmt = ts => {
-  const d = parseDate(ts);
-  if (!d) return "—";
-  return d.toLocaleDateString("pt-BR") + " " + d.toLocaleTimeString("pt-BR", {hour:"2-digit",minute:"2-digit"});
-};
-const fmtDate = ts => {
-  const d = parseDate(ts);
-  return d ? d.toLocaleDateString("pt-BR") : "—";
-};
-const fmtTime = ts => {
-  const d = parseDate(ts);
-  return d ? d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}) : "—";
-};
-const esc = s => String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const $ = id => document.getElementById(id);
+const esc = s => String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+// ─── DATA REAL DO OCORRIDO ────────────────────────────────────────────────
+// Prioridade: campo date explícito > entry_date (plantões) > event_date (docs) > created_at
+const realDate = row => {
+  if (row.date) {
+    const t = row.time || "00:00";
+    return new Date(`${row.date}T${t}`);
+  }
+  const ed = row.entry_date || row.entryDate;
+  if (ed) {
+    const t = row.entry_time || row.entryTime || "00:00";
+    if (ed.includes("/")) { const [d,m,y]=ed.split("/"); return new Date(`${y}-${m}-${d}T${t}`); }
+    return new Date(`${ed}T${t}`);
+  }
+  if (row.event_date || row.eventDate) return new Date(row.event_date || row.eventDate);
+  const ca = row.createdAt || row.created_at;
+  const d = new Date(ca||0);
+  return isNaN(d) ? new Date(0) : d;
+};
+const realTs = row => realDate(row).getTime();
+
+const fmt = d => { if (!d||isNaN(d)) return "—"; return d.toLocaleDateString("pt-BR")+" "+d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); };
+const fmtD = d => { if (!d||isNaN(d)) return "—"; return d.toLocaleDateString("pt-BR"); };
+const fmtT = d => { if (!d||isNaN(d)) return ""; return d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); };
+
+const rD = row => fmtD(realDate(row));
+const rT = row => (row.time||row.entry_time||row.entryTime) ? fmtT(realDate(row)) : "";
 
 const normalizeRow = row => ({
   ...row,
@@ -530,21 +538,14 @@ const normalizeRow = row => ({
   entryTime: row.entryTime || row.entry_time,
   exitDate: row.exitDate || row.exit_date,
   exitTime: row.exitTime || row.exit_time,
+  eventDate: row.eventDate || row.event_date,
 });
 
 async function loadTable(table, target) {
-  const { data, error } = await supabaseClient
-    .from(table)
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error(`Erro ao carregar ${table}:`, error);
-    return;
-  }
-
+  const { data, error } = await supabaseClient.from(table).select("*").order("created_at",{ascending:false});
+  if (error) { console.error(`Erro ao carregar ${table}:`, error); return; }
   target.length = 0;
-  (data || []).forEach(row => target.push(normalizeRow(row)));
+  (data||[]).forEach(row => target.push(normalizeRow(row)));
 }
 
 async function refreshAll() {
@@ -556,66 +557,57 @@ async function refreshAll() {
       loadTable("vitals", vitals),
       loadTable("evolutions", evols),
       loadTable("shifts", shifts),
+      loadTable("documents", docs),
     ]);
-
-    renderMeds();
-    renderVitals();
-    renderEvols();
-    renderShifts();
-    renderDash();
+    renderMeds(); renderVitals(); renderEvols(); renderShifts(); renderDocs(); renderDash();
     if (currentPage === "timeline") renderTimeline();
-  } finally {
-    isRefreshing = false;
-  }
+  } finally { isRefreshing = false; }
 }
 
-// ─── SUPABASE DATA SYNC ───────────────────────────────────────────────────
 function subscribeData() {
   refreshAll();
-
-  supabaseClient
-    .channel("plantao-familiar-db")
-    .on("postgres_changes", { event: "*", schema: "public", table: "medications" }, refreshAll)
-    .on("postgres_changes", { event: "*", schema: "public", table: "vitals" }, refreshAll)
-    .on("postgres_changes", { event: "*", schema: "public", table: "evolutions" }, refreshAll)
-    .on("postgres_changes", { event: "*", schema: "public", table: "shifts" }, refreshAll)
+  supabaseClient.channel("plantao-familiar-db")
+    .on("postgres_changes",{event:"*",schema:"public",table:"medications"},refreshAll)
+    .on("postgres_changes",{event:"*",schema:"public",table:"vitals"},refreshAll)
+    .on("postgres_changes",{event:"*",schema:"public",table:"evolutions"},refreshAll)
+    .on("postgres_changes",{event:"*",schema:"public",table:"shifts"},refreshAll)
+    .on("postgres_changes",{event:"*",schema:"public",table:"documents"},refreshAll)
     .subscribe();
-
   window.addEventListener("focus", refreshAll);
   setInterval(refreshAll, 30000);
 }
 
-// ─── NAVIGATION ───────────────────────────────────────────────────────────
-const pageTitles = {dashboard:"Visão Geral",medications:"Medicações",vitals:"Sinais Vitais",evolution:"Evolução do Paciente",shifts:"Plantões",timeline:"Timeline"};
-
+const pageTitles = {dashboard:"Visão Geral",medications:"Medicações",vitals:"Sinais Vitais",evolution:"Evolução do Paciente",shifts:"Plantões",docs:"Documentos",timeline:"Timeline"};
 window.goPage = page => {
   currentPage = page;
-  document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
-  document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+  document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
+  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
   $("page-"+page).classList.remove("hidden");
   document.querySelector(`[data-page="${page}"]`).classList.add("active");
   $("topbar-title").textContent = pageTitles[page];
   if (page === "timeline") renderTimeline();
 };
 
-// ─── MODALS ───────────────────────────────────────────────────────────────
 window.openModal = id => $(id).classList.add("open");
 window.closeModal = id => $(id).classList.remove("open");
-document.querySelectorAll(".modal-bg").forEach(m => m.addEventListener("click", e => { if(e.target === m) m.classList.remove("open"); }));
+document.querySelectorAll(".modal-bg").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("open");}));
 
-// ─── ROUTE BADGE COLORS ───────────────────────────────────────────────────
-const routeBadge = {oral:"badge-green",intravenosa:"badge-blue",subcutânea:"badge-yellow",intramuscular:"badge-orange",tópica:"badge-purple",inalatória:"badge-blue",sublingual:"badge-yellow",retal:"badge-orange"};
+const routeBadge = {oral:"badge-green",intravenosa:"badge-blue","subcutânea":"badge-yellow",intramuscular:"badge-orange","tópica":"badge-purple","inalatória":"badge-blue",sublingual:"badge-yellow",retal:"badge-orange"};
 const catBadge = {evolução:"badge-purple","visita médica":"badge-blue",exame:"badge-yellow",intercorrência:"badge-red","alteração de medicação":"badge-orange",reclamação:"badge-orange"};
+const docCatBadge = {exame:"badge-yellow",anamnese:"badge-purple","histórico médico":"badge-blue",receita:"badge-green",laudo:"badge-orange",outro:"badge-gray"};
+const docIcon = {exame:"🔬",anamnese:"📋","histórico médico":"📚",receita:"💊",laudo:"📄",outro:"📎"};
 
-// ─── RENDER DASHBOARD ─────────────────────────────────────────────────────
+// ─── DASHBOARD ────────────────────────────────────────────────────────────
 function renderDash() {
-  const lm = meds[0], lv = vitals[0];
-  const activeShift = shifts.find(s => !s.exitTime);
+  const sm = [...meds].sort((a,b)=>realTs(b)-realTs(a));
+  const sv = [...vitals].sort((a,b)=>realTs(b)-realTs(a));
+  const lm=sm[0], lv=sv[0];
+  const activeShift = shifts.find(s=>!s.exitTime);
 
   $("dash-med-name").textContent = lm ? lm.name : "—";
-  $("dash-med-sub").textContent = lm ? `${lm.dose} · ${lm.time || fmtTime(lm.createdAt)}` : "Nenhuma registrada";
+  $("dash-med-sub").textContent = lm ? `${lm.dose} · ${rD(lm)} ${rT(lm)}`.trim() : "Nenhuma registrada";
   $("dash-spo2").textContent = lv?.spo2 || "—";
-  $("dash-spo2-sub").textContent = lv ? fmtTime(lv.createdAt) : "Não registrada";
+  $("dash-spo2-sub").textContent = lv ? rD(lv) : "Não registrada";
   $("dash-bp").textContent = lv?.bp || "—";
   $("dash-bp-sub").textContent = lv?.hr ? `FC: ${lv.hr} bpm` : "Não registrada";
   $("dash-temp").textContent = lv?.temp ? `${lv.temp}°` : "—";
@@ -625,22 +617,20 @@ function renderDash() {
   if (activeShift) {
     banner.classList.remove("hidden");
     $("dash-shift-name").textContent = activeShift.familiarName + " em plantão";
-    $("dash-shift-time").textContent = "desde " + (activeShift.entryTime || fmtTime(activeShift.createdAt));
-  } else {
-    banner.classList.add("hidden");
-  }
+    $("dash-shift-time").textContent = "desde " + (activeShift.entryDate||"") + " " + (activeShift.entryTime||"");
+  } else banner.classList.add("hidden");
 
   const events = [
-    ...meds.slice(0,3).map(m=>({ts:m.createdAt,text:`Medicação: ${m.name} ${m.dose}`,type:"med"})),
-    ...vitals.slice(0,2).map(v=>({ts:v.createdAt,text:`Sinais vitais — PA ${v.bp||"—"}`,type:"vital"})),
-    ...evols.slice(0,2).map(e=>({ts:e.createdAt,text:e.text.slice(0,80)+(e.text.length>80?"…":""),type:"evol"})),
-  ].sort((a,b)=>timeValue(b.ts)-timeValue(a.ts)).slice(0,5);
+    ...sm.slice(0,3).map(m=>({ts:realTs(m),dl:rD(m)+" "+rT(m),text:`Medicação: ${m.name} ${m.dose}`,type:"med"})),
+    ...sv.slice(0,2).map(v=>({ts:realTs(v),dl:rD(v)+" "+rT(v),text:`Sinais vitais — PA ${v.bp||"—"}`,type:"vital"})),
+    ...[...evols].sort((a,b)=>realTs(b)-realTs(a)).slice(0,2).map(e=>({ts:realTs(e),dl:rD(e),text:e.text.slice(0,80)+(e.text.length>80?"…":""),type:"evol"})),
+  ].sort((a,b)=>b.ts-a.ts).slice(0,5);
 
-  const typeLabel = {med:"Medicação",vital:"Sinais Vitais",evol:"Evolução"};
+  const typeLabel={med:"Medicação",vital:"Sinais Vitais",evol:"Evolução"};
   $("dash-timeline").innerHTML = events.length ? events.map(ev=>`
     <div class="tl-item">
       <div class="tl-dot tl-dot-${esc(ev.type)}"></div>
-      <div class="tl-time">${fmt(ev.ts)}</div>
+      <div class="tl-time">${esc(ev.dl.trim())}</div>
       <div class="tl-content">
         <div class="tl-type tl-type-${esc(ev.type)}">${typeLabel[ev.type]}</div>
         <div class="tl-text">${esc(ev.text)}</div>
@@ -648,76 +638,67 @@ function renderDash() {
     </div>`).join("") : '<div style="color:var(--text3);font-size:13px;padding:20px 0">Nenhum evento ainda.</div>';
 
   if (lv) {
-    $("dash-vitals-body").innerHTML = `<div class="card-body">
-      <div class="vitals-grid">
-        ${[
-          {label:"Pressão",val:lv.bp||"—",icon:"🩺"},
-          {label:"FC",val:lv.hr?lv.hr+" bpm":"—",icon:"❤️"},
-          {label:"Saturação",val:lv.spo2||"—",icon:"💧"},
-          {label:"Temperatura",val:lv.temp?lv.temp+"°C":"—",icon:"🌡️"},
-          {label:"FR",val:lv.rr?lv.rr+" rpm":"—",icon:"🫁"},
-          {label:"Glicemia",val:lv.glucose||"—",icon:"🩸"},
-        ].map(v=>`<div class="vital-box"><div class="vital-icon">${v.icon}</div><div class="vital-val">${esc(v.val)}</div><div class="vital-lbl">${v.label}</div></div>`).join("")}
-      </div>
-      <div style="font-size:11px;color:var(--text3);margin-top:12px;text-align:center">
-        Registrado em ${fmt(lv.createdAt)} por ${esc(lv.registeredBy)}
-      </div>
-    </div>`;
+    $("dash-vitals-body").innerHTML = `<div class="card-body"><div class="vitals-grid">${[
+      {label:"Pressão",val:lv.bp||"—",icon:"🩺"},
+      {label:"FC",val:lv.hr?lv.hr+" bpm":"—",icon:"❤️"},
+      {label:"Saturação",val:lv.spo2||"—",icon:"💧"},
+      {label:"Temperatura",val:lv.temp?lv.temp+"°C":"—",icon:"🌡️"},
+      {label:"FR",val:lv.rr?lv.rr+" rpm":"—",icon:"🫁"},
+      {label:"Glicemia",val:lv.glucose||"—",icon:"🩸"},
+    ].map(v=>`<div class="vital-box"><div class="vital-icon">${v.icon}</div><div class="vital-val">${esc(v.val)}</div><div class="vital-lbl">${v.label}</div></div>`).join("")}
+    </div><div style="font-size:11px;color:var(--text3);margin-top:12px;text-align:center">Registrado em ${rD(lv)} ${rT(lv)} por ${esc(lv.registeredBy)}</div></div>`;
   } else {
     $("dash-vitals-body").innerHTML = '<div class="card-empty">Nenhum sinal vital registrado.</div>';
   }
 
   const badge = $("badge-meds");
-  if (meds.length > 0) { badge.textContent = meds.length; badge.classList.remove("hidden"); }
-  else badge.classList.add("hidden");
+  if (meds.length) { badge.textContent=meds.length; badge.classList.remove("hidden"); } else badge.classList.add("hidden");
 }
 
-// ─── RENDER MEDICATIONS ───────────────────────────────────────────────────
+// ─── RENDER MEDS ──────────────────────────────────────────────────────────
 function renderMeds() {
-  if (!meds.length) { $("meds-content").innerHTML = '<div class="card-empty">Nenhuma medicação registrada ainda.</div>'; return; }
+  if (!meds.length) { $("meds-content").innerHTML='<div class="card-empty">Nenhuma medicação registrada ainda.</div>'; return; }
+  const sorted = [...meds].sort((a,b)=>realTs(b)-realTs(a));
   $("meds-content").innerHTML = `<div class="table-wrap"><table>
-    <thead><tr><th>Data/Hora</th><th>Medicação</th><th>Dosagem</th><th>Via</th><th>Profissional</th><th>Registrado por</th><th>Obs.</th><th></th></tr></thead>
-    <tbody>${meds.map(m=>`<tr>
-      <td><span class="tag">${esc(m.date||fmtDate(m.createdAt))} ${esc(m.time||fmtTime(m.createdAt))}</span></td>
-      <td style="font-weight:600">${esc(m.name)}</td>
-      <td>${esc(m.dose)}</td>
+    <thead><tr><th>Data/Hora Real</th><th>Medicação</th><th>Dosagem</th><th>Via</th><th>Profissional</th><th>Registrado por</th><th>Obs.</th><th></th></tr></thead>
+    <tbody>${sorted.map(m=>`<tr>
+      <td><span class="tag">${esc(rD(m))} ${esc(rT(m))}</span></td>
+      <td style="font-weight:600">${esc(m.name)}</td><td>${esc(m.dose)}</td>
       <td><span class="badge ${routeBadge[m.route]||"badge-blue"}">${esc(m.route)}</span></td>
       <td>${esc(m.professional||"—")}</td>
       <td><span class="accent-text">${esc(m.registeredBy)}</span></td>
       <td style="color:var(--text2);max-width:160px">${esc(m.notes||"—")}</td>
       <td><button class="delete-btn" onclick="delDoc('medications','${m.id}')">🗑</button></td>
-    </tr>`).join("")}</tbody>
-  </table></div>`;
+    </tr>`).join("")}</tbody></table></div>`;
 }
 
 // ─── RENDER VITALS ────────────────────────────────────────────────────────
 function renderVitals() {
-  if (!vitals.length) { $("vitals-content").innerHTML = '<div class="card-empty">Nenhum sinal vital registrado ainda.</div>'; return; }
+  if (!vitals.length) { $("vitals-content").innerHTML='<div class="card-empty">Nenhum sinal vital registrado ainda.</div>'; return; }
+  const sorted = [...vitals].sort((a,b)=>realTs(b)-realTs(a));
   $("vitals-content").innerHTML = `<div class="table-wrap"><table>
-    <thead><tr><th>Data/Hora</th><th>PA</th><th>FC</th><th>SpO2</th><th>Temperatura</th><th>FR</th><th>Glicemia</th><th>Registrado por</th><th></th></tr></thead>
-    <tbody>${vitals.map(v=>`<tr>
-      <td><span class="tag">${esc(v.date||fmtDate(v.createdAt))} ${esc(v.time||fmtTime(v.createdAt))}</span></td>
-      <td>${esc(v.bp||"—")}</td>
-      <td>${v.hr?esc(v.hr)+" bpm":"—"}</td>
+    <thead><tr><th>Data/Hora Real</th><th>PA</th><th>FC</th><th>SpO2</th><th>Temperatura</th><th>FR</th><th>Glicemia</th><th>Registrado por</th><th></th></tr></thead>
+    <tbody>${sorted.map(v=>`<tr>
+      <td><span class="tag">${esc(rD(v))} ${esc(rT(v))}</span></td>
+      <td>${esc(v.bp||"—")}</td><td>${v.hr?esc(v.hr)+" bpm":"—"}</td>
       <td>${v.spo2?`<span class="badge ${parseInt(v.spo2)>=95?"badge-green":"badge-red"}">${esc(v.spo2)}</span>`:"—"}</td>
-      <td>${v.temp?esc(v.temp)+"°C":"—"}</td>
-      <td>${v.rr?esc(v.rr)+" rpm":"—"}</td>
+      <td>${v.temp?esc(v.temp)+"°C":"—"}</td><td>${v.rr?esc(v.rr)+" rpm":"—"}</td>
       <td>${esc(v.glucose||"—")}</td>
       <td><span class="accent-text">${esc(v.registeredBy)}</span></td>
       <td><button class="delete-btn" onclick="delDoc('vitals','${v.id}')">🗑</button></td>
-    </tr>`).join("")}</tbody>
-  </table></div>`;
+    </tr>`).join("")}</tbody></table></div>`;
 }
 
-// ─── RENDER EVOLUTIONS ────────────────────────────────────────────────────
+// ─── RENDER EVOLS ─────────────────────────────────────────────────────────
 function renderEvols() {
-  if (!evols.length) { $("evol-content").innerHTML = '<div class="card-empty">Nenhuma evolução registrada ainda.</div>'; return; }
-  $("evol-content").innerHTML = `<div class="card-body">${evols.map(e=>`
+  if (!evols.length) { $("evol-content").innerHTML='<div class="card-empty">Nenhuma evolução registrada ainda.</div>'; return; }
+  const sorted = [...evols].sort((a,b)=>realTs(b)-realTs(a));
+  $("evol-content").innerHTML = `<div class="card-body">${sorted.map(e=>`
     <div class="evol-item">
       <div class="evol-header">
         <div>
           <div class="evol-cat"><span class="badge ${catBadge[e.category]||"badge-purple"}">${esc(e.category)}</span></div>
-          <div class="evol-meta">${fmt(e.createdAt)}</div>
+          <div class="evol-meta">${esc(rD(e))}</div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
           <div class="evol-author">${esc(e.registeredBy)}</div>
@@ -730,7 +711,7 @@ function renderEvols() {
 
 // ─── RENDER SHIFTS ────────────────────────────────────────────────────────
 function renderShifts() {
-  const activeShift = shifts.find(s => !s.exitTime);
+  const activeShift = shifts.find(s=>!s.exitTime);
   const banner = $("shifts-banner");
   if (activeShift) {
     banner.classList.remove("hidden");
@@ -742,126 +723,335 @@ function renderShifts() {
       </div>
       <button class="btn btn-sm" style="background:var(--yellow-dim);color:var(--yellow);border:1px solid rgba(210,153,34,.3)" onclick="endShift('${activeShift.id}')">Encerrar plantão</button>
     </div>`;
-  } else {
-    banner.classList.add("hidden");
-  }
+  } else banner.classList.add("hidden");
 
-  if (!shifts.length) { $("shifts-content").innerHTML = '<div class="card-empty">Nenhum plantão registrado ainda.</div>'; return; }
+  if (!shifts.length) { $("shifts-content").innerHTML='<div class="card-empty">Nenhum plantão registrado ainda.</div>'; return; }
+  const sorted = [...shifts].sort((a,b)=>realTs(b)-realTs(a));
   $("shifts-content").innerHTML = `<div class="table-wrap"><table>
     <thead><tr><th>Familiar</th><th>Entrada</th><th>Saída</th><th>Obs.</th><th>Status</th><th></th></tr></thead>
-    <tbody>${shifts.map(s=>`<tr>
+    <tbody>${sorted.map(s=>`<tr>
       <td style="font-weight:600">${esc(s.familiarName)}</td>
       <td><span class="tag">${esc(s.entryDate||"")} ${esc(s.entryTime||"")}</span></td>
       <td>${s.exitTime?`<span class="tag">${esc(s.exitDate||"")} ${esc(s.exitTime)}</span>`:"—"}</td>
       <td style="color:var(--text2)">${esc(s.notes||"—")}</td>
       <td>${!s.exitTime?'<span class="badge badge-green">Ativo</span>':'<span class="badge badge-gray">Encerrado</span>'}</td>
       <td><button class="delete-btn" onclick="delDoc('shifts','${s.id}')">🗑</button></td>
-    </tr>`).join("")}</tbody>
-  </table></div>`;
+    </tr>`).join("")}</tbody></table></div>`;
 }
 
-// ─── RENDER TIMELINE ──────────────────────────────────────────────────────
+// ─── RENDER DOCS ──────────────────────────────────────────────────────────
+function renderDocs() {
+  const badge = $("badge-docs");
+  if (docs.length) { badge.textContent=docs.length; badge.classList.remove("hidden"); } else badge.classList.add("hidden");
+  if (!docs.length) { $("docs-content").innerHTML='<div class="card-empty">Nenhum documento anexado ainda.</div>'; return; }
+  const sorted = [...docs].sort((a,b)=>realTs(b)-realTs(a));
+  $("docs-content").innerHTML = `<div class="card-body">${sorted.map(d=>{
+    const cat=d.category||"outro";
+    return `<div class="doc-item">
+      <div class="doc-info">
+        <div class="doc-icon">${docIcon[cat]||"📎"}</div>
+        <div>
+          <div class="doc-name">${esc(d.title)}</div>
+          <div class="doc-meta"><span class="badge ${docCatBadge[cat]||"badge-gray"}" style="margin-right:6px">${esc(cat)}</span>${esc(rD(d))} · ${esc(d.registeredBy||"—")}</div>
+          ${d.notes?`<div style="font-size:12px;color:var(--text2);margin-top:4px">${esc(d.notes)}</div>`:""}
+        </div>
+      </div>
+      <div class="doc-actions">
+        ${d.file_url?`<a href="${esc(d.file_url)}" target="_blank" class="btn btn-sm btn-ghost" style="text-decoration:none">👁 Ver</a>`:""}
+        <button class="delete-btn" onclick="delDoc('documents','${d.id}')">🗑</button>
+      </div>
+    </div>`;
+  }).join("")}</div>`;
+}
+
+// ─── TIMELINE (data real, crescente → mais recente no topo) ───────────────
 function renderTimeline() {
   const all = [
-    ...meds.map(m=>({ts:m.createdAt,type:"med",label:"Medicação",text:`${m.name} ${m.dose} — via ${m.route}${m.professional?" · "+m.professional:""}`,meta:m.registeredBy})),
-    ...vitals.map(v=>({ts:v.createdAt,type:"vital",label:"Sinais Vitais",text:`PA: ${v.bp||"—"} · FC: ${v.hr?v.hr+" bpm":"—"} · SpO2: ${v.spo2||"—"} · Temp: ${v.temp?v.temp+"°C":"—"}`,meta:v.registeredBy})),
-    ...evols.map(e=>({ts:e.createdAt,type:"evol",label:e.category||"Evolução",text:e.text,meta:e.registeredBy})),
-    ...shifts.map(s=>({ts:s.createdAt,type:"shift",label:"Plantão",text:`${s.familiarName} — entrada ${s.entryTime||""}${s.exitTime?" / saída "+s.exitTime:" (ativo)"}`,meta:s.registeredBy})),
-  ].sort((a,b)=>timeValue(b.ts)-timeValue(a.ts));
+    ...meds.map(m=>({ts:realTs(m),dl:rD(m)+" "+rT(m),type:"med",cat:"Medicação",text:`${m.name} ${m.dose} — via ${m.route||"—"}${m.professional?" · "+m.professional:""}`,meta:m.registeredBy})),
+    ...vitals.map(v=>({ts:realTs(v),dl:rD(v)+" "+rT(v),type:"vital",cat:"Sinais Vitais",text:`PA: ${v.bp||"—"} · FC: ${v.hr?v.hr+" bpm":"—"} · SpO2: ${v.spo2||"—"} · Temp: ${v.temp?v.temp+"°C":"—"}`,meta:v.registeredBy})),
+    ...evols.map(e=>({ts:realTs(e),dl:rD(e),type:"evol",cat:e.category||"Evolução",text:e.text,meta:e.registeredBy})),
+    ...shifts.map(s=>({ts:realTs(s),dl:(s.entryDate||"")+" "+(s.entryTime||""),type:"shift",cat:"Plantão",text:`${s.familiarName} — entrada ${s.entryTime||""}${s.exitTime?" / saída "+s.exitTime:" (ativo)"}`,meta:s.registeredBy})),
+    ...docs.map(d=>({ts:realTs(d),dl:rD(d),type:"doc",cat:d.category||"Documento",text:d.title+(d.notes?" — "+d.notes:""),meta:d.registeredBy})),
+  ].sort((a,b)=>b.ts-a.ts);
 
   $("timeline-all").innerHTML = all.length ? all.map(ev=>`
     <div class="tl-item">
       <div class="tl-dot tl-dot-${esc(ev.type)}"></div>
-      <div class="tl-time">${fmt(ev.ts)}</div>
+      <div class="tl-time">${esc(ev.dl.trim())}</div>
       <div class="tl-content">
-        <div class="tl-type tl-type-${esc(ev.type)}">${esc(ev.label)}</div>
+        <div class="tl-type tl-type-${esc(ev.type)}">${esc(ev.cat)}</div>
         <div class="tl-text">${esc(ev.text)}</div>
         <div class="tl-meta">Registrado por ${esc(ev.meta)}</div>
       </div>
     </div>`).join("") : '<div style="color:var(--text3);font-size:13px">Nenhum evento registrado ainda.</div>';
 }
 
-// ─── SAVE ACTIONS ─────────────────────────────────────────────────────────
+// ─── SAVES ────────────────────────────────────────────────────────────────
 const registeredBy = () => userName || "Familiar";
 
 window.saveMed = async () => {
-  const name = $("med-name").value.trim(), dose = $("med-dose").value.trim();
-  if (!name || !dose) return;
-  const { error } = await supabaseClient.from("medications").insert([{ 
-    date:$("med-date").value, time:$("med-time").value, name, dose,
+  const name=$("med-name").value.trim(), dose=$("med-dose").value.trim();
+  if (!name||!dose) return;
+  const { error } = await supabaseClient.from("medications").insert([{
+    date:$("med-date").value||null, time:$("med-time").value||null, name, dose,
     route:$("med-route").value, professional:$("med-prof").value,
     notes:$("med-notes").value, registered_by:registeredBy(), type:"med", created_at:new Date().toISOString()
   }]);
-  if (error) { console.error("Erro ao salvar medicação:", error); alert("Erro ao salvar medicação. Veja o console."); return; }
+  if (error) { alert("Erro ao salvar medicação. Veja o console."); console.error(error); return; }
   ["med-date","med-time","med-name","med-dose","med-prof","med-notes"].forEach(id=>$(id).value="");
-  closeModal("modal-med");
-  refreshAll();
+  closeModal("modal-med"); refreshAll();
 };
 
 window.saveVital = async () => {
   const { error } = await supabaseClient.from("vitals").insert([{
-    date:$("vit-date").value, time:$("vit-time").value, bp:$("vit-bp").value,
+    date:$("vit-date").value||null, time:$("vit-time").value||null, bp:$("vit-bp").value,
     hr:$("vit-hr").value, spo2:$("vit-spo2").value, temp:$("vit-temp").value,
     rr:$("vit-rr").value, glucose:$("vit-glucose").value, notes:$("vit-notes").value,
     registered_by:registeredBy(), type:"vital", created_at:new Date().toISOString()
   }]);
-  if (error) { console.error("Erro ao salvar sinais vitais:", error); alert("Erro ao salvar sinais vitais. Veja o console."); return; }
+  if (error) { alert("Erro ao salvar sinais vitais. Veja o console."); console.error(error); return; }
   ["vit-date","vit-time","vit-bp","vit-hr","vit-spo2","vit-temp","vit-rr","vit-glucose","vit-notes"].forEach(id=>$(id).value="");
-  closeModal("modal-vital");
-  refreshAll();
+  closeModal("modal-vital"); refreshAll();
 };
 
 window.saveEvol = async () => {
-  const text = $("evol-text").value.trim();
+  const text=$("evol-text").value.trim();
   if (!text) return;
   const { error } = await supabaseClient.from("evolutions").insert([{
+    date:$("evol-date").value||null,
     category:$("evol-cat").value, text, registered_by:registeredBy(), type:"evol", created_at:new Date().toISOString()
   }]);
-  if (error) { console.error("Erro ao salvar evolução:", error); alert("Erro ao salvar evolução. Veja o console."); return; }
-  $("evol-text").value="";
-  closeModal("modal-evol");
-  refreshAll();
+  if (error) { alert("Erro ao salvar evolução. Veja o console."); console.error(error); return; }
+  ["evol-date","evol-text"].forEach(id=>$(id).value="");
+  closeModal("modal-evol"); refreshAll();
 };
 
 window.saveShift = async () => {
-  const familiarName = $("shift-name").value.trim();
+  const familiarName=$("shift-name").value.trim();
   if (!familiarName) return;
   const { error } = await supabaseClient.from("shifts").insert([{
-    familiar_name:familiarName,
-    entry_date:$("shift-edate").value,
-    entry_time:$("shift-etime").value,
-    exit_date:$("shift-xdate").value,
-    exit_time:$("shift-xtime").value,
-    notes:$("shift-notes").value,
-    registered_by:registeredBy(), type:"shift", created_at:new Date().toISOString()
+    familiar_name:familiarName, entry_date:$("shift-edate").value, entry_time:$("shift-etime").value,
+    exit_date:$("shift-xdate").value, exit_time:$("shift-xtime").value,
+    notes:$("shift-notes").value, registered_by:registeredBy(), type:"shift", created_at:new Date().toISOString()
   }]);
-  if (error) { console.error("Erro ao salvar plantão:", error); alert("Erro ao salvar plantão. Veja o console."); return; }
+  if (error) { alert("Erro ao salvar plantão. Veja o console."); console.error(error); return; }
   ["shift-name","shift-edate","shift-etime","shift-xdate","shift-xtime","shift-notes"].forEach(id=>$(id).value="");
-  closeModal("modal-shift");
-  refreshAll();
+  closeModal("modal-shift"); refreshAll();
 };
 
 window.endShift = async id => {
   const now = new Date();
   const { error } = await supabaseClient.from("shifts").update({
-    exit_time: now.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),
-    exit_date: now.toLocaleDateString("pt-BR")
-  }).eq("id", id);
-  if (error) { console.error("Erro ao encerrar plantão:", error); alert("Erro ao encerrar plantão. Veja o console."); return; }
+    exit_time:now.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),
+    exit_date:now.toLocaleDateString("pt-BR")
+  }).eq("id",id);
+  if (error) { alert("Erro ao encerrar plantão."); console.error(error); return; }
   refreshAll();
 };
 
 window.delDoc = async (col, id) => {
   if (!confirm("Confirmar exclusão?")) return;
-  const { error } = await supabaseClient.from(col).delete().eq("id", id);
-  if (error) { console.error("Erro ao excluir:", error); alert("Erro ao excluir. Veja o console."); return; }
+  const { error } = await supabaseClient.from(col).delete().eq("id",id);
+  if (error) { alert("Erro ao excluir."); console.error(error); return; }
   refreshAll();
 };
 
+// ─── DOCUMENTOS ───────────────────────────────────────────────────────────
+window.handleFileSelect = e => {
+  selectedFile = e.target.files[0];
+  if (selectedFile) $("file-selected").textContent = `✓ ${selectedFile.name} (${(selectedFile.size/1024/1024).toFixed(2)} MB)`;
+};
+window.handleDrop = e => {
+  e.preventDefault(); $("file-drop").classList.remove("drag");
+  selectedFile = e.dataTransfer.files[0];
+  if (selectedFile) $("file-selected").textContent = `✓ ${selectedFile.name}`;
+};
+
+window.saveDoc = async () => {
+  const title=$("doc-title").value.trim();
+  if (!title) { alert("Informe o título do documento."); return; }
+  if (!selectedFile) { alert("Selecione um arquivo."); return; }
+  if (selectedFile.size > 10*1024*1024) { alert("Arquivo muito grande. Máximo 10 MB."); return; }
+
+  const bar=$("upload-bar"), prog=$("upload-progress");
+  prog.classList.remove("hidden"); bar.style.width="20%";
+
+  const ext=selectedFile.name.split(".").pop();
+  const path=`docs/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+
+  bar.style.width="50%";
+  const { error: uploadErr } = await supabaseClient.storage.from("documents").upload(path, selectedFile);
+  if (uploadErr) { alert("Erro no upload: "+uploadErr.message); prog.classList.add("hidden"); return; }
+
+  bar.style.width="80%";
+  const { data:{ publicUrl } } = supabaseClient.storage.from("documents").getPublicUrl(path);
+
+  const { error } = await supabaseClient.from("documents").insert([{
+    title, category:$("doc-cat").value,
+    event_date:$("doc-date").value||null,
+    notes:$("doc-notes").value||null,
+    file_url:publicUrl, file_name:selectedFile.name,
+    file_size:selectedFile.size, registered_by:registeredBy(),
+    created_at:new Date().toISOString()
+  }]);
+  if (error) { alert("Erro ao salvar documento."); prog.classList.add("hidden"); return; }
+
+  bar.style.width="100%";
+  setTimeout(()=>prog.classList.add("hidden"),500);
+  ["doc-title","doc-date","doc-notes"].forEach(id=>$(id).value="");
+  $("file-input").value=""; $("file-selected").textContent=""; selectedFile=null; $("doc-cat").selectedIndex=0;
+  closeModal("modal-doc"); refreshAll();
+};
+
+// ─── EXPORT PDF ───────────────────────────────────────────────────────────
+window.exportPDF = async () => {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({unit:"mm",format:"a4"});
+  const W=210, M=16, CW=W-M*2;
+  let y=16;
+
+  const C={dark:[13,17,23],surface:[22,27,34],accent:[45,156,219],green:[63,185,80],text:[230,237,243],text2:[139,148,158],white:[255,255,255],yellow:[210,153,34],purple:[188,140,255]};
+
+  const checkY=(n=14)=>{ if(y+n>282){pdf.addPage();y=16;} };
+  const fillRect=(x,yy,w,h,c)=>{pdf.setFillColor(...c);pdf.rect(x,yy,w,h,"F");};
+  const txt=(t,x,yy,o={})=>{
+    pdf.setTextColor(...(o.c||C.text));
+    pdf.setFontSize(o.s||10);
+    pdf.setFont("helvetica",o.b?"bold":"normal");
+    pdf.text(String(t||"—"),x,yy,{maxWidth:o.mw||CW,align:o.a||"left"});
+  };
+  const hr=(c=[48,54,61],w=0.3)=>{pdf.setDrawColor(...c);pdf.setLineWidth(w);pdf.line(M,y,W-M,y);y+=4;};
+  const sec=(title,bg)=>{ checkY(14); fillRect(M,y,CW,9,bg); y+=6.5; txt(title,M+3,y,{b:true,s:10,c:C.white}); y+=6; };
+  const sub=(t)=>{ checkY(10); hr(C.accent,0.5); txt(t,M,y,{b:true,s:9,c:C.accent}); y+=6; };
+  const para=(t,ind=0)=>{ const ls=pdf.splitTextToSize(String(t||""),CW-ind); ls.forEach(l=>{checkY(5);txt(l,M+ind,y,{s:8.5});y+=5;}); y+=1; };
+
+  // Busca dados frescos com data real
+  const [rM,rV,rE,rS,rD2] = await Promise.all([
+    supabaseClient.from("medications").select("*"),
+    supabaseClient.from("vitals").select("*"),
+    supabaseClient.from("evolutions").select("*"),
+    supabaseClient.from("shifts").select("*"),
+    supabaseClient.from("documents").select("*"),
+  ]);
+  const norm=(d)=>(d||[]).map(normalizeRow);
+  const pM=norm(rM.data).sort((a,b)=>realTs(b)-realTs(a));
+  const pV=norm(rV.data).sort((a,b)=>realTs(b)-realTs(a));
+  const pE=norm(rE.data).sort((a,b)=>realTs(b)-realTs(a));
+  const pS=norm(rS.data).sort((a,b)=>realTs(b)-realTs(a));
+  const pD=norm(rD2.data).sort((a,b)=>realTs(b)-realTs(a));
+
+  // ── CAPA ──
+  fillRect(0,0,W,297,C.dark);
+  fillRect(0,0,W,50,C.surface);
+  y=18;
+  txt("PLANTÃO FAMILIAR",M,y,{b:true,s:20,c:C.accent}); y+=9;
+  txt("Relatório Médico e Familiar — Dados do Supabase",M,y,{s:11,c:C.text2}); y+=7;
+  txt(`Gerado em: ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}`,M,y,{s:9,c:C.text2});
+  y=58;
+  const stats=[[pM.length,"Medicações",C.accent],[pV.length,"Sinais Vitais",C.green],[pE.length,"Evoluções",C.purple],[pS.length,"Plantões",C.yellow]];
+  stats.forEach(([n,l,c],i)=>{
+    const sx=M+i*(CW/4), sw=CW/4-3;
+    fillRect(sx,y,sw,20,C.surface);
+    pdf.setTextColor(...c); pdf.setFontSize(16); pdf.setFont("helvetica","bold");
+    pdf.text(String(n),sx+sw/2,y+13,{align:"center"});
+    txt(l,sx+sw/2,y+19,{s:8,c:C.text2,a:"center"});
+  });
+  y+=28;
+
+  // ══════════════════════════════
+  //  SEÇÃO MÉDICA
+  // ══════════════════════════════
+  sec("SEÇÃO PARA O MÉDICO — ANÁLISE CLÍNICA",C.accent);
+
+  if (pV.length) {
+    sub("Sinais Vitais (por data real do ocorrido)");
+    pV.slice(0,15).forEach(v=>{
+      checkY(12);
+      txt(`${rD(v)} ${rT(v)} — Reg: ${v.registeredBy||"—"}`,M,y,{s:7.5,c:C.text2}); y+=5;
+      txt(`PA: ${v.bp||"—"}  FC: ${v.hr?v.hr+" bpm":"—"}  SpO2: ${v.spo2||"—"}  Temp: ${v.temp?v.temp+"°C":"—"}  FR: ${v.rr?v.rr+" rpm":"—"}  Gli: ${v.glucose||"—"}`,M+3,y,{s:8.5}); y+=5;
+      if(v.notes) para(v.notes,3);
+      pdf.setDrawColor(48,54,61);pdf.setLineWidth(0.2);pdf.line(M,y,W-M,y);y+=3;
+    });
+  }
+
+  if (pM.length) {
+    sub("Medicações (por data real do ocorrido)");
+    pM.slice(0,25).forEach(m=>{
+      checkY(10);
+      txt(`${rD(m)} ${rT(m)}`,M,y,{s:7.5,c:C.text2}); y+=5;
+      txt(`${m.name} — ${m.dose} — via ${m.route||"—"}${m.professional?" — Prof: "+m.professional:""}`,M+3,y,{s:8.5}); y+=5;
+      if(m.notes) para(m.notes,3);
+      pdf.setDrawColor(48,54,61);pdf.setLineWidth(0.2);pdf.line(M,y,W-M,y);y+=3;
+    });
+  }
+
+  if (pE.length) {
+    sub("Evoluções Clínicas (por data real do ocorrido)");
+    pE.forEach(e=>{
+      checkY(12);
+      txt(`${rD(e)} — ${e.category||"—"} — ${e.registeredBy||"—"}`,M,y,{s:7.5,c:C.text2}); y+=5;
+      para(e.text,3);
+      pdf.setDrawColor(48,54,61);pdf.setLineWidth(0.2);pdf.line(M,y,W-M,y);y+=3;
+    });
+  }
+
+  if (pS.length) {
+    sub("Plantões Familiares");
+    pS.forEach(s=>{ checkY(8); txt(`${s.familiarName||"—"} | Entrada: ${s.entryDate||"—"} ${s.entryTime||""} | Saída: ${s.exitDate||"—"} ${s.exitTime||"(ativo)"}`,M,y,{s:8.5}); y+=5; if(s.notes) para(s.notes,3); });
+  }
+
+  if (pD.length) {
+    sub("Documentos Anexados");
+    pD.forEach(d=>{ checkY(8); txt(`📎 ${d.title} — ${d.category||"—"} — ${rD(d)}`,M,y,{s:8.5}); y+=5; if(d.notes) para(d.notes,3); });
+  }
+
+  // ══════════════════════════════
+  //  SEÇÃO LEIGA
+  // ══════════════════════════════
+  pdf.addPage(); y=16;
+  fillRect(0,0,W,297,C.dark);
+  sec("SEÇÃO PARA O FAMILIAR — RESUMO SIMPLIFICADO",C.green);
+
+  sub("O que aconteceu? (em ordem cronológica real)");
+
+  const all=[
+    ...pM.map(m=>({ts:realTs(m),dt:rD(m),text:`💊 Medicação: ${m.name} (${m.dose}) via ${m.route||"—"}${m.professional?" — por "+m.professional:""}.`})),
+    ...pV.map(v=>({ts:realTs(v),dt:rD(v),text:`🩺 Sinais vitais: Pressão ${v.bp||"—"}, Batimentos ${v.hr?v.hr+" bpm":"—"}, Saturação ${v.spo2||"—"}, Temperatura ${v.temp?v.temp+"°C":"—"}.`})),
+    ...pE.map(e=>({ts:realTs(e),dt:rD(e),text:`📋 ${e.category||"Registro"}: ${e.text}`})),
+    ...pS.map(s=>({ts:realTs(s),dt:s.entryDate||rD(s),text:`👤 ${s.familiarName} em plantão — entrada ${s.entryDate||"—"} ${s.entryTime||""}, saída: ${s.exitDate||"—"} ${s.exitTime||"(ainda em plantão)"}.`})),
+  ].sort((a,b)=>a.ts-b.ts);
+
+  let lastDay="";
+  all.forEach(ev=>{
+    if(ev.dt!==lastDay){
+      checkY(12); y+=2;
+      fillRect(M,y,CW,7,C.surface);
+      txt(`📅 ${ev.dt}`,M+3,y+5,{b:true,s:9,c:C.accent});
+      y+=10; lastDay=ev.dt;
+    }
+    para(ev.text,4);
+  });
+
+  sub("Situação atual");
+  const lv2=pV[0];
+  if(lv2) para(`Os últimos sinais vitais foram em ${rD(lv2)}. Pressão: ${lv2.bp||"não registrada"}, batimentos: ${lv2.hr?lv2.hr+" por minuto":"não registrado"}, saturação: ${lv2.spo2||"não registrada"}, temperatura: ${lv2.temp?lv2.temp+"°C":"não registrada"}.`);
+  const lm2=pM[0];
+  if(lm2) para(`A última medicação foi ${lm2.name} (${lm2.dose}) em ${rD(lm2)}.`);
+  const aSh=pS.find(s=>!s.exitTime);
+  para(aSh?`${aSh.familiarName} está em plantão desde ${aSh.entryDate||"—"} ${aSh.entryTime||""}.`:"Não há familiar em plantão no momento.");
+
+  if(pD.length){ sub("Documentos disponíveis"); pD.forEach(d=>{checkY(8);para(`📎 ${d.title} (${d.category||"—"})${d.notes?" — "+d.notes:""}`,3);}); }
+
+  const pg=pdf.internal.getNumberOfPages();
+  for(let i=1;i<=pg;i++){pdf.setPage(i);txt(`Plantão Familiar · Página ${i}/${pg}`,W/2,291,{s:8,c:C.text2,a:"center"});}
+
+  pdf.save(`plantao-familiar-${new Date().toLocaleDateString("pt-BR").replace(/\//g,"-")}.pdf`);
+};
+
 // ─── INIT ─────────────────────────────────────────────────────────────────
-$("topbar-date").textContent = new Date().toLocaleDateString("pt-BR", {weekday:"long",day:"2-digit",month:"long"});
+$("topbar-date").textContent = new Date().toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long"});
 subscribeData();
-console.log("Supabase conectado com sucesso.");
+console.log("Supabase conectado.");
 </script>
 </body>
 </html>
